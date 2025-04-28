@@ -1,0 +1,28 @@
+import mongoose from 'mongoose';
+
+const userSchema = new mongoose.Schema({
+  userType: {
+    type: String,
+    enum: ['user','admin'],
+    required: true
+  },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['patient', 'doctor', 'admin'], default: 'patient' },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
+  dateOfBirth: { type: Date },
+  address: {
+    street: String,
+    city: String,
+    postalCode: String,
+    country: String
+  },
+  profileImage: String,
+  isVerified: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+export default mongoose.models.User || mongoose.model('User', userSchema);
