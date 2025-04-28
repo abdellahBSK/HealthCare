@@ -130,9 +130,10 @@ export function Header() {
           <div className="flex items-center space-x-4">
             <ModeToggle scrolled={scrolled} />
             <Button
-
+              variant={"default"}
               size="sm"
               className={cn(
+                "bg-primary text-primary-foreground hover:bg-primary/80",
                 scrolled && "border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10"
               )}
               asChild
@@ -140,10 +141,10 @@ export function Header() {
               <Link href="/login">Sign In</Link>
             </Button>
             <Button
-              variant={scrolled ? "outline" : "default"}
+              variant={"default"}
               size="sm"
               className={cn(
-                "bg-accent text-accent-foreground hover:bg-accent/90",
+                "bg-accent text-accent-foreground hover:bg-accent/80",
                 scrolled && "border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10"
               )}
               asChild

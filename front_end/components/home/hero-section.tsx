@@ -57,8 +57,8 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <Button size="lg" className="group" asChild>
-                <Link href="/register">
-                  Get Started 
+                <Link href="/book">
+                  Book an Appointment
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
