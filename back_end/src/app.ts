@@ -12,9 +12,11 @@ app.use(express.json());
 app.use('/api',routes); 
 
 
+
 app.get('/', (req, res) => {
   res.send('Healthcare API is running');
 });
+
 
 
 export default app;

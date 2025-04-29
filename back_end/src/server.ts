@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import app from './app.js'
+import expressListEndpoints from 'express-list-endpoints';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ mongoose.connect(MONGO_URI)
   console.log('MongoDB Connected');
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log('✅ Available routes:');
+    console.table(expressListEndpoints(app));
   });
 })
 .catch((err) => {
