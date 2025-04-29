@@ -7,9 +7,7 @@ import healthFacilityRoutes from './healthFacilityRoutes.js';
 import medicalRecordRoutes from './medicalRecordRoutes.js';
 import reviewRoutes from './reviewRoutes.js';
 import reportRoutes from './reportRoutes.js';
-
 const router = express.Router();
-
 router.use('/users', userRoutes);
 router.use('/doctors', doctorRoutes);
 router.use('/patients', patientRoutes);
@@ -18,5 +16,4 @@ router.use('/health-facilities', healthFacilityRoutes);
 router.use('/medical-records', medicalRecordRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/reports', reportRoutes);
-
 export default router;

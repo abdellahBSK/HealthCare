@@ -1,4 +1,4 @@
-import MedicalRecord from '../models/MedicalRecord';
+import MedicalRecord from '../models/MedicalRecord.js';
 import { Request, Response } from 'express';
 
 // Get all medical records
