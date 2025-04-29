@@ -1,4 +1,4 @@
-import Doctor from '../models/Doctor';
+import Doctor from '../models/Doctor.js';
 import { Request, Response } from 'express';
 
 // Get all doctors

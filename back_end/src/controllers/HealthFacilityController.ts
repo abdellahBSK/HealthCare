@@ -1,4 +1,4 @@
-import HealthFacility from '../models/HealthFacility';
+import HealthFacility from '../models/HealthFacility.js';
 import { Request, Response } from 'express';
 
 // Get all health facilities
