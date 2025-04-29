@@ -1,23 +1,67 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Eye, EyeOff, Mail, Lock, Heart, User, Stethoscope } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import Link from "next/link";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  Heart,
+  User,
+  Stethoscope,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import api from "@/api/api";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [userType, setUserType] = useState('patient');
-  
+  const [userType, setUserType] = useState("patient");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+        userType,
+      });
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userType", userType);
+
+      if (userType === "patient") {
+        router.push("/dashboard/patient");
+      } else {
+        router.push("/dashboard/doctor");
+      }
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Failed to login. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen px-4 py-24">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-5xl">
-        <motion.div 
+        <motion.div
           className="space-y-6 p-8 lg:p-12 neomorph rounded-2xl"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -28,35 +72,45 @@ export default function LoginPage() {
               <Heart className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-3xl font-bold font-heading">Welcome back</h1>
-            <p className="text-muted-foreground">Sign in to your account to continue</p>
+            <p className="text-muted-foreground">
+              Sign in to your account to continue
+            </p>
           </div>
-          
+
           <Tabs defaultValue="email" className="w-full">
             <TabsList className="grid w-full grid-cols-2 neomorph-inset">
               <TabsTrigger value="email">Email</TabsTrigger>
               <TabsTrigger value="phone">Phone</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="email" className="space-y-6 pt-4">
+              {error && (
+                <div className="p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  {error}
+                </div>
+              )}
               <div className="grid gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      id="email" 
-                      placeholder="name@example.com" 
-                      type="email" 
-                      className="pl-10 neomorph-inset" 
+                    <Input
+                      id="email"
+                      placeholder="name@example.com"
+                      type="email"
+                      className="pl-10 neomorph-inset"
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <Link 
-                      href="/forgot-password" 
+                    <Link
+                      href="/forgot-password"
                       className="text-xs text-muted-foreground hover:text-primary transition-colors"
                     >
                       Forgot password?
@@ -64,10 +118,13 @@ export default function LoginPage() {
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      id="password" 
-                      type={showPassword ? "text" : "password"} 
-                      className="pl-10 pr-10 neomorph-inset" 
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      className="pl-10 pr-10 neomorph-inset"
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
                     <button
                       type="button"
@@ -83,31 +140,31 @@ export default function LoginPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center space-x-4 justify-around py-2">
-                  <UserTypeButton 
-                    icon={User} 
-                    label="Patient" 
-                    active={userType === 'patient'} 
-                    onClick={() => setUserType('patient')} 
+                  <UserTypeButton
+                    icon={User}
+                    label="Patient"
+                    active={userType === "patient"}
+                    onClick={() => setUserType("patient")}
                   />
-                  <UserTypeButton 
-                    icon={Stethoscope} 
-                    label="Doctor" 
-                    active={userType === 'doctor'} 
-                    onClick={() => setUserType('doctor')} 
+                  <UserTypeButton
+                    icon={Stethoscope}
+                    label="Doctor"
+                    active={userType === "doctor"}
+                    onClick={() => setUserType("doctor")}
                   />
                 </div>
-                
-                <Button className="w-full" size="lg">
+
+                <Button className="w-full" size="lg" onClick={handleLogin}>
                   Sign In
                 </Button>
-                
+
                 <p className="text-center text-sm text-muted-foreground">
                   Don't have an account?{" "}
-                  <Link 
-                    href="/register" 
+                  <Link
+                    href="/register"
                     className="font-medium text-primary hover:underline"
                   >
                     Sign up
@@ -115,7 +172,7 @@ export default function LoginPage() {
                 </p>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="phone" className="space-y-6 pt-4">
               <div className="grid gap-4">
                 <div className="space-y-2">
@@ -124,11 +181,11 @@ export default function LoginPage() {
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                       +1
                     </span>
-                    <Input 
-                      id="phone" 
-                      placeholder="(555) 555-5555" 
-                      type="tel" 
-                      className="pl-10 neomorph-inset" 
+                    <Input
+                      id="phone"
+                      placeholder="(555) 555-5555"
+                      type="tel"
+                      className="pl-10 neomorph-inset"
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
@@ -136,15 +193,15 @@ export default function LoginPage() {
                   </p>
                 </div>
               </div>
-              
+
               <Button className="w-full" size="lg">
                 Send Code
               </Button>
-              
+
               <p className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <Link 
-                  href="/register" 
+                <Link
+                  href="/register"
                   className="font-medium text-primary hover:underline"
                 >
                   Sign up
@@ -153,8 +210,8 @@ export default function LoginPage() {
             </TabsContent>
           </Tabs>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           className="hidden lg:flex items-center justify-center relative"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -165,9 +222,12 @@ export default function LoginPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
               <div className="space-y-4 max-w-sm">
-                <h2 className="text-2xl font-bold font-heading">Premium Healthcare Access</h2>
+                <h2 className="text-2xl font-bold font-heading">
+                  Premium Healthcare Access
+                </h2>
                 <p className="text-muted-foreground">
-                  Join thousands of patients and doctors using our platform for quality healthcare delivery.
+                  Join thousands of patients and doctors using our platform for
+                  quality healthcare delivery.
                 </p>
                 <div className="grid grid-cols-2 gap-3 py-4">
                   {benefits.map((benefit, i) => (
@@ -188,10 +248,15 @@ export default function LoginPage() {
   );
 }
 
-function UserTypeButton({ icon: Icon, label, active, onClick }: { 
-  icon: any; 
-  label: string; 
-  active: boolean; 
+function UserTypeButton({
+  icon: Icon,
+  label,
+  active,
+  onClick,
+}: {
+  icon: any;
+  label: string;
+  active: boolean;
   onClick: () => void;
 }) {
   return (
@@ -200,8 +265,8 @@ function UserTypeButton({ icon: Icon, label, active, onClick }: {
       onClick={onClick}
       className={cn(
         "flex flex-col items-center space-y-2 rounded-lg p-3 transition-all",
-        active 
-          ? "neomorph text-primary" 
+        active
+          ? "neomorph text-primary"
           : "neomorph-inset text-muted-foreground hover:text-foreground"
       )}
     >
@@ -212,10 +277,10 @@ function UserTypeButton({ icon: Icon, label, active, onClick }: {
 }
 
 const benefits = [
-  { icon: PhoneCall, text: '24/7 Support' },
-  { icon: Calendar, text: 'Easy Scheduling' },
-  { icon: Clock, text: 'Quick Response' },
-  { icon: ShieldCheck, text: 'Secure Data' },
+  { icon: PhoneCall, text: "24/7 Support" },
+  { icon: Calendar, text: "Easy Scheduling" },
+  { icon: Clock, text: "Quick Response" },
+  { icon: ShieldCheck, text: "Secure Data" },
 ];
 
-import { PhoneCall, Calendar, Clock, ShieldCheck } from 'lucide-react';
+import { PhoneCall, Calendar, Clock, ShieldCheck } from "lucide-react";
