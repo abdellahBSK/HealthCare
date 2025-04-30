@@ -1,9 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-import Doctor from '../models/Doctor.js';
-import Patient from '../models/Patient.js';
 import dotenv from 'dotenv';
+import { sendVerificationEmail } from '../utils/sendVerificationEmail.js';
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -28,12 +27,15 @@ export const register = async (req, res) => {
             address,
             profileImage: profileImage ?? null
         });
-        if (userType === 'doctor') {
-            await Doctor.create({ user: newUser._id });
-        }
-        else if (userType === 'patient') {
-            await Patient.create({ user: newUser._id });
-        }
+        // if(newUser.userType === 'doctor'){
+        //   await Doctor.create({ user: newUser._id });
+        // }else if (newUser.userType === 'patient') {
+        //   await Patient.create({ user: newUser._id });
+        // }
+        //Todo: add email verification
+        const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: '10m' });
+        const emailResponse = await sendVerificationEmail(email, token);
+        console.log("email response: ", emailResponse);
         return res.status(201).json({ message: 'User registered successfully' });
     }
     catch (error) {

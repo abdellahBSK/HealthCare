@@ -42,13 +42,16 @@ export default function LoginPage() {
       });
 
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user",response.data.user);
       localStorage.setItem("userType", userType);
 
-      if (userType === "patient") {
-        router.push("/dashboard/patient");
-      } else {
-        router.push("/dashboard/doctor");
-      }
+      
+
+      // if (userType === "patient") {
+      //   router.push("/dashboard/patient");
+      // } else {
+      //   router.push("/dashboard/doctor");
+      // }
     } catch (err: any) {
       setError(
         err.response?.data?.message || "Failed to login. Please try again."
