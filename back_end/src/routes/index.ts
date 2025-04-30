@@ -1,22 +1,27 @@
+// src/routes/index.ts
 import express from 'express';
-import userRoutes from './userRoutes.js';
-import doctorRoutes from './doctorRoutes.js';
-import patientRoutes from './patientRoutes.js';
-import notificationRoutes from './notificationRoutes.js';
-import healthFacilityRoutes from './healthFacilityRoutes.js';
-import medicalRecordRoutes from './medicalRecordRoutes.js';
-import reviewRoutes from './reviewRoutes.js';
-import reportRoutes from './reportRoutes.js';
+import authRoutes from './authRoutes';
+import doctorRoutes from './doctorRoutes';
+import patientRoutes from './patientRoutes';
+import appointmentRoutes from './appointmentRoutes';
+import healthFacilityRoutes from './healthFacilityRoutes';
+import medicalRecordRoutes from './medicalRecordRoutes';
+import notificationRoutes from './notificationRoutes';
+import reportRoutes from './reportRoutes';
+import reviewRoutes from './reviewRoutes';
+import userRoutes from './userRoutes';
 
 const router = express.Router();
 
-router.use('/users', userRoutes);
+router.use('/auth', authRoutes);
 router.use('/doctors', doctorRoutes);
 router.use('/patients', patientRoutes);
-router.use('/notifications', notificationRoutes);
+router.use('/appointments', appointmentRoutes);
 router.use('/health-facilities', healthFacilityRoutes);
 router.use('/medical-records', medicalRecordRoutes);
-router.use('/reviews', reviewRoutes);
+router.use('/notifications', notificationRoutes);
 router.use('/reports', reportRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/users', userRoutes);
 
 export default router;
