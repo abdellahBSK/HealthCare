@@ -32,7 +32,6 @@ export const register = async (req, res) => {
         // }else if (newUser.userType === 'patient') {
         //   await Patient.create({ user: newUser._id });
         // }
-        //Todo: add email verification
         const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: '10m' });
         const emailResponse = await sendVerificationEmail(email, token);
         console.log("email response: ", emailResponse);
