@@ -1,23 +1,24 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Outfit, Inter } from 'next/font/google';
-import { Providers } from './providers';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Outfit, Inter } from "next/font/google";
+import { Providers } from "./providers";
 
-const outfit = Outfit({ 
-  subsets: ['latin'],
-  variable: '--font-outfit',
+
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
 });
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-inter',
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: 'HealthCare - Premium Medical Teleconsultation',
-  description: 'Connect with top healthcare professionals through secure video consultations',
+  title: "HealthCare - Premium Medical Teleconsultation",
+  description:
+    "Connect with top healthcare professionals through secure video consultations",
 };
 
 export default function RootLayout({
@@ -25,15 +26,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+ 
+
+ 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${outfit.variable} ${inter.variable} font-sans`}>
         <Providers>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+         
+        {children}
+      
         </Providers>
       </body>
     </html>
