@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function DocumentsLoading() {
+export default function AppointmentsLoading() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -11,15 +11,13 @@ export default function DocumentsLoading() {
         <Skeleton className="h-10 w-40" />
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <Skeleton className="h-96 lg:col-span-1 rounded-lg" />
-        <div className="lg:col-span-3 space-y-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-lg" />
-          ))}
-        </div>
+      <Skeleton className="h-12 w-full mb-6" />
+      
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="h-32 w-full rounded-lg" />
+        ))}
       </div>
     </div>
   );
 }
-  

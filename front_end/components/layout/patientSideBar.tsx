@@ -9,6 +9,7 @@ import {
   User,
   Settings,
   LogOut,
+  MessageCircle
 } from "lucide-react";
 
 export function PatientSideBar() {
@@ -71,6 +72,15 @@ export function PatientSideBar() {
             >
               <FileIcon className="h-5 w-5" />
               <span>Documents</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/patient/dashboard/messages"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
+            >
+              <MessageCircle className="h-5 w-5" />
+              <span>Messages</span>
             </Link>
           </li>
         </ul>

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, MapPin, Plus, Video } from "lucide-react"
+import Link from "next/link"
 
 export default function AppointmentsPage() {
   return (
@@ -124,8 +125,14 @@ export default function AppointmentsPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" className="border-blue-900 text-blue-900 hover:bg-blue-50">
-                    View Summary
+                 
+                  
+                  <Button 
+                    variant="outline" 
+                    className="border-blue-900 text-blue-900 hover:bg-blue-50"
+                    asChild
+                  >
+                    <Link href="/patient/dashboard/appointments/past-appointment-1">View Summary</Link>
                   </Button>
                   <Button className="bg-blue-900 hover:bg-blue-800">Book Follow-up</Button>
                 </div>
@@ -147,7 +154,11 @@ export default function AppointmentsPage() {
           <Card className="p-4 border-2 border-blue-100 bg-blue-50">
             <h3 className="font-medium text-blue-900 mb-2">Schedule an Appointment</h3>
             <p className="text-sm text-gray-600 mb-4">Book an in-person visit with your doctor</p>
-            <Button className="w-full bg-blue-900 hover:bg-blue-800">Schedule Now</Button>
+           
+            
+            <Button className="w-full bg-blue-900 hover:bg-blue-800" asChild>
+              <Link href="/patient/dashboard/appointments/schedule">Schedule Now</Link>
+            </Button>
           </Card>
 
           <Card className="p-4 border-2 border-green-100 bg-green-50">
