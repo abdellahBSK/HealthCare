@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Plus } from "lucide-react"
+import Link from "next/link"
 
 export default function MedicalHistoryPage() {
   return (
@@ -11,8 +12,12 @@ export default function MedicalHistoryPage() {
           <h1 className="text-2xl font-bold text-blue-900">Medical History</h1>
           <p className="text-gray-500">John Doe • DOB: 1990-05-15</p>
         </div>
-        <Button className="bg-blue-900 hover:bg-blue-800">
-          <Plus className="h-4 w-4 mr-2" /> Add Record
+        
+        
+        <Button className="bg-blue-900 hover:bg-blue-800" asChild>
+          <Link href="/patient/dashboard/medical-history/add">
+            <Plus className="h-4 w-4 mr-2" /> Add Record
+          </Link>
         </Button>
       </div>
 
