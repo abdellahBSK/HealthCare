@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import { Heart, Stethoscope, Calendar, MessageCircle, Search, Menu, X } from 'lucide-react';
+import { Heart, Stethoscope, Calendar, MessageCircle, Search, Menu, X, User, FileText, Pill, Hospital } from 'lucide-react';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -78,10 +78,10 @@ export function Header() {
                 <NavigationMenuTrigger className={cn(
                   "bg-transparent hover:bg-transparent transition-colors",
                   scrolled ? "text-primary-foreground" : "text-foreground"
-                )}>For Patients</NavigationMenuTrigger>
+                )}>Patient Portal</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {patientsItems.map((item) => (
+                    {patientPortalItems.map((item) => (
                       <ListItem
                         key={item.title}
                         title={item.title}
@@ -98,10 +98,10 @@ export function Header() {
                 <NavigationMenuTrigger className={cn(
                   "bg-transparent hover:bg-transparent transition-colors",
                   scrolled ? "text-primary-foreground" : "text-foreground"
-                )}>For Doctors</NavigationMenuTrigger>
+                )}>Doctor Portal</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {doctorsItems.map((item) => (
+                    {doctorPortalItems.map((item) => (
                       <ListItem
                         key={item.title}
                         title={item.title}
@@ -175,7 +175,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden px-4 py-6 glass-effect border-t border-border/50 animate-in fade-in slide-in-from-top">
+        <div className="md:hidden px-4 py-6 glass-effect border-t border-border/50 animate-in fade-in slide-in-from-top max-h-[80vh] overflow-y-auto">
           <nav className="flex flex-col space-y-4">
             <h3 className="font-heading font-medium text-sm text-muted-foreground mb-2">Services</h3>
             {servicesItems.map((item) => (
@@ -190,8 +190,8 @@ export function Header() {
               </Link>
             ))}
             
-            <h3 className="font-heading font-medium text-sm text-muted-foreground mt-4 mb-2">For Patients</h3>
-            {patientsItems.map((item) => (
+            <h3 className="font-heading font-medium text-sm text-muted-foreground mt-4 mb-2">Patient Portal</h3>
+            {patientPortalItems.map((item) => (
               <Link
                 key={item.title}
                 href={item.href}
@@ -203,8 +203,8 @@ export function Header() {
               </Link>
             ))}
             
-            <h3 className="font-heading font-medium text-sm text-muted-foreground mt-4 mb-2">For Doctors</h3>
-            {doctorsItems.map((item) => (
+            <h3 className="font-heading font-medium text-sm text-muted-foreground mt-4 mb-2">Doctor Portal</h3>
+            {doctorPortalItems.map((item) => (
               <Link
                 key={item.title}
                 href={item.href}
@@ -278,69 +278,69 @@ const servicesItems = [
     icon: Heart,
   },
   {
-    title: "Medical Records",
-    description: "Access and manage your medical history and documents",
-    href: "/services/records",
+    title: "Health Information",
+    description: "Access reliable health information and resources",
+    href: "/services/health-info",
+    icon: FileText,
+  },
+  {
+    title: "Pharmacy Services",
+    description: "Order medications and manage prescriptions online",
+    href: "/services/pharmacy",
+    icon: Pill,
+  },
+];
+
+const patientPortalItems = [
+  {
+    title: "Dashboard",
+    description: "Access your personalized patient dashboard",
+    href: "/patient/dashboard",
+    icon: User,
+  },
+  {
+    title: "Book Appointment",
+    description: "Schedule consultations with healthcare professionals",
+    href: "/patient/book-appointment",
     icon: Calendar,
   },
   {
-    title: "Messaging",
-    description: "Securely communicate with healthcare providers",
-    href: "/services/messaging",
+    title: "Medical Records",
+    description: "View and manage your complete medical history",
+    href: "/patient/medical-records",
+    icon: FileText,
+  },
+  {
+    title: "Messages",
+    description: "Communicate securely with your healthcare providers",
+    href: "/patient/messages",
     icon: MessageCircle,
   },
 ];
 
-const patientsItems = [
+const doctorPortalItems = [
   {
-    title: "Find a Doctor",
-    description: "Search for specialists based on expertise and availability",
-    href: "/patients/find-doctor",
-    icon: Search,
+    title: "Dashboard",
+    description: "Access your doctor dashboard and overview",
+    href: "/doctor/dashboard",
+    icon: User,
   },
   {
-    title: "Schedule Appointment",
-    description: "Book consultations with healthcare professionals",
-    href: "/patients/appointments",
+    title: "Appointments",
+    description: "Manage your consultation schedule and patient appointments",
+    href: "/doctor/appointments",
     icon: Calendar,
   },
-  {
-    title: "Health Records",
-    description: "View and manage your complete medical history",
-    href: "/patients/records",
-    icon: Calendar,
-  },
-  {
-    title: "Prescriptions",
-    description: "Access your electronic prescriptions and refill requests",
-    href: "/patients/prescriptions",
-    icon: Stethoscope,
-  },
-];
-
-const doctorsItems = [
   {
     title: "Patient Management",
-    description: "Organize and access your patient information securely",
-    href: "/doctors/patients",
-    icon: Search,
+    description: "Access and manage your patients' information",
+    href: "/doctor/patients",
+    icon: Hospital,
   },
   {
-    title: "Appointment Schedule",
-    description: "Manage your consultation calendar and availability",
-    href: "/doctors/schedule",
-    icon: Calendar,
-  },
-  {
-    title: "Consultation Tools",
-    description: "Access video conferencing and medical reference tools",
-    href: "/doctors/tools",
-    icon: Stethoscope,
-  },
-  {
-    title: "Revenue Dashboard",
-    description: "Track your earnings and financial analytics",
-    href: "/doctors/revenue",
-    icon: Heart,
+    title: "Messages",
+    description: "Communicate with patients and other healthcare providers",
+    href: "/doctor/messages",
+    icon: MessageCircle,
   },
 ];

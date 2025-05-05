@@ -74,7 +74,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-blue-900">Upcoming Appointments</h2>
             <Button variant="outline" className="text-blue-900 border-blue-900 hover:bg-blue-50">
-            <Link href="/patient/dashboard/appointments">View All</Link>
+            <Link href="/patient/appointments">View All</Link>
             </Button>
           </div>
 
