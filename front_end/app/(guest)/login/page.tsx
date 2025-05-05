@@ -45,6 +45,11 @@ export default function LoginPage() {
       localStorage.setItem("user",response.data.user);
       localStorage.setItem("userType", userType);
 
+      if(!response.data.user.isVerified)
+      {
+        router.push(`/verify_email?email=${email}`);
+      }
+
       
 
       // if (userType === "patient") {

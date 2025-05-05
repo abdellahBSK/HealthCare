@@ -36,8 +36,8 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
 export const reSendVerification = async (req: Request, res: Response) => {
   try {
-    const emailParam = req.query.email;
-    console.log(typeof emailParam);
+    const emailParam = req.body.email;
+    console.log(emailParam);
 
     if (!emailParam || typeof emailParam !== "string") {
       return res
