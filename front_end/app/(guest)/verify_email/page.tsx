@@ -39,52 +39,6 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-blue-900 font-bold text-xl"
-          >
-            <Heart className="h-6 w-6 fill-blue-900 stroke-blue-900" />
-            <span>HealthCare</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <div className="relative group">
-              <button className="flex items-center gap-1 text-gray-700 hover:text-blue-900">
-                Services <span className="text-xs">▼</span>
-              </button>
-            </div>
-            <div className="relative group">
-              <button className="flex items-center gap-1 text-gray-700 hover:text-blue-900">
-                For Patients <span className="text-xs">▼</span>
-              </button>
-            </div>
-            <div className="relative group">
-              <button className="flex items-center gap-1 text-gray-700 hover:text-blue-900">
-                For Doctors <span className="text-xs">▼</span>
-              </button>
-            </div>
-            <Link href="/about" className="text-gray-700 hover:text-blue-900">
-              About
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              className="border-blue-900 text-blue-900 hover:bg-blue-50"
-            >
-              Sign In
-            </Button>
-            <Button className="bg-yellow-500 hover:bg-yellow-600 text-black">
-              Register
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-16 flex flex-col items-center">
         <Card className="max-w-md w-full p-8 shadow-lg border-0">
