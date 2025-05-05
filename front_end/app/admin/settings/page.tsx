@@ -64,25 +64,25 @@ export default function SettingsPage() {
   });
   
   // Gestionnaires d'événements
-  const handleProfileChange = (e) => {
+  const handleProfileChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
     setProfileForm(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSecurityChange = (e) => {
+  const handleSecurityChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
     setSecurityForm(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleToggleChange = (name, value) => {
+  const handleToggleChange = (name: string, value: boolean) => {
     setNotificationForm(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSecurityToggle = (name, value) => {
+  const handleSecurityToggle = (name: string, value: boolean) => {
     setSecurityForm(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleAppearanceChange = (name, value) => {
+  const handleAppearanceChange = (name: string, value: string) => {
     setAppearanceForm(prev => ({ ...prev, [name]: value }));
   };
   
