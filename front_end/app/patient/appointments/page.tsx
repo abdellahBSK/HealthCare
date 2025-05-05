@@ -132,7 +132,7 @@ export default function AppointmentsPage() {
                     className="border-blue-900 text-blue-900 hover:bg-blue-50"
                     asChild
                   >
-                    <Link href="/patient/dashboard/appointments/past-appointment-1">View Summary</Link>
+                    <Link href="/patient/appointments/past-appointment-1">View Summary</Link>
                   </Button>
                   <Button className="bg-blue-900 hover:bg-blue-800">Book Follow-up</Button>
                 </div>
@@ -157,7 +157,7 @@ export default function AppointmentsPage() {
            
             
             <Button className="w-full bg-blue-900 hover:bg-blue-800" asChild>
-              <Link href="/patient/dashboard/appointments/schedule">Schedule Now</Link>
+              <Link href="/patient/appointments/schedule">Schedule Now</Link>
             </Button>
           </Card>
 

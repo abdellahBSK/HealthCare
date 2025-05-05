@@ -40,7 +40,7 @@ export function PatientSideBar() {
           </li>
           <li>
             <Link
-              href="/patient/dashboard/medical-history"
+              href="/patient/medical-history"
               className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
             >
               <FileText className="h-5 w-5" />
@@ -49,7 +49,7 @@ export function PatientSideBar() {
           </li>
           <li>
             <Link
-              href="/patient/dashboard/appointments"
+              href="/patient/appointments"
               className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
             >
               <Calendar className="h-5 w-5" />
@@ -58,7 +58,7 @@ export function PatientSideBar() {
           </li>
           <li>
             <Link
-              href="/patient/dashboard/medications"
+              href="/patient/medications"
               className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
             >
               <Pill className="h-5 w-5" />
@@ -67,7 +67,7 @@ export function PatientSideBar() {
           </li>
           <li>
             <Link
-              href="/patient/dashboard/documents"
+              href="/patient/documents"
               className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
             >
               <FileIcon className="h-5 w-5" />
@@ -76,7 +76,7 @@ export function PatientSideBar() {
           </li>
           <li>
             <Link
-              href="/patient/dashboard/messages"
+              href="/patient/messages"
               className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-blue-50 rounded-md"
             >
               <MessageCircle className="h-5 w-5" />
@@ -102,7 +102,7 @@ export function PatientSideBar() {
 
           <div className="flex flex-col gap-2 mt-1">
             <Link
-              href="/patient/dashboard/profile"
+              href="/patient/profile"
               className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-900 px-2 py-1.5 rounded-md hover:bg-blue-50"
             >
               <User className="h-4 w-4" />
@@ -110,7 +110,7 @@ export function PatientSideBar() {
             </Link>
 
             <Link
-              href="/patient/dashboard/settings"
+              href="/patient/settings"
               className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-900 px-2 py-1.5 rounded-md hover:bg-blue-50"
             >
               <Settings className="h-4 w-4" />
