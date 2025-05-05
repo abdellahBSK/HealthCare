@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import app from './app.js';
 import expressListEndpoints from 'express-list-endpoints';
 dotenv.config();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.BACKEND_PORT || 8000;
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
     throw new Error('MONGO_URI is not defined in the environment variables');
