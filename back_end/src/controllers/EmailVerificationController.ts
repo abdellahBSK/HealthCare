@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { sendVerificationEmail } from "../utils/sendVerificationEmail.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined in the environment variables");
