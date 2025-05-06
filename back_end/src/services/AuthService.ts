@@ -41,14 +41,11 @@ class AuthService {
       // Create profile based on user type
       if (userData.userType === 'doctor') {
         await doctorService.create({
-          user: newUser._id,
-          name: userData.name,
-          speciality: userData.speciality || 'General'
+          user: newUser._id
         });
       } else if (userData.userType === 'patient') {
         await patientService.create({
-          user: newUser._id,
-          name: userData.name
+          user: newUser._id
         });
       }
 
@@ -73,7 +70,7 @@ class AuthService {
     }
   }
 
-  async verifyEmail(token: string): Promise<boolean> {
+  async verifyEmail(token: string): Promise<any> {
     try {
       // Find verification record with this token
       const verification = await EmailVerification.findOne({
@@ -98,7 +95,7 @@ class AuthService {
       // Delete the verification record
       await EmailVerification.deleteOne({ _id: verification._id });
 
-      return true;
+      return user;
     } catch (error) {
       throw error;
     }
@@ -296,7 +293,7 @@ class AuthService {
     }
   }
 
-  private generateToken(userId: string): string {
+   generateToken(userId: string): string {
     return  jwt.sign(
         { userId: userId },
         this.JWT_SECRET,

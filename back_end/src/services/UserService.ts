@@ -7,9 +7,43 @@ export class UserService extends BaseService<any> {
     super(User);
   }
   
+  // Helper method to add full URL to profile image path
+  private addImageUrl(user: any): any {
+    if (user && user.profileImage) {
+      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 8000}`;
+      
+      // If user is a Mongoose document, convert to plain object
+      const userObj = user.toObject ? user.toObject() : { ...user };
+      userObj.profileImage = `${baseUrl}${userObj.profileImage}`;
+      return userObj;
+    }
+    return user;
+  }
+  
+  // Override findById from BaseService to include image URL
+  async findById(id: string): Promise<any | null> {
+    try {
+      const user = await User.findById(id).exec();
+      return this.addImageUrl(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  // Override findAll from BaseService to include image URL
+  async findAll(): Promise<any[]> {
+    try {
+      const users = await User.find().exec();
+      return users.map(user => this.addImageUrl(user));
+    } catch (error) {
+      throw error;
+    }
+  }
+  
   async findByEmail(email: string): Promise<any | null> {
     try {
-      return await User.findOne({ email }).exec();
+      const user = await User.findOne({ email }).exec();
+      return this.addImageUrl(user);
     } catch (error) {
       throw error;
     }
@@ -17,11 +51,12 @@ export class UserService extends BaseService<any> {
   
   async updatePassword(userId: string, hashedPassword: string): Promise<any | null> {
     try {
-      return await User.findByIdAndUpdate(
+      const user = await User.findByIdAndUpdate(
         userId,
         { password: hashedPassword },
         { new: true }
       ).exec();
+      return this.addImageUrl(user);
     } catch (error) {
       throw error;
     }
@@ -35,11 +70,13 @@ export class UserService extends BaseService<any> {
       delete safeUpdateData.userType;
       delete safeUpdateData.isVerified;
       
-      return await User.findByIdAndUpdate(
+      const user = await User.findByIdAndUpdate(
         userId,
         safeUpdateData,
         { new: true }
       ).select('-password').exec();
+      
+      return this.addImageUrl(user);
     } catch (error) {
       throw error;
     }
@@ -54,7 +91,7 @@ export class UserService extends BaseService<any> {
       }
       
       // Update email and set isVerified to false
-      return await User.findByIdAndUpdate(
+      const user = await User.findByIdAndUpdate(
         userId,
         { 
           email: newEmail,
@@ -62,6 +99,8 @@ export class UserService extends BaseService<any> {
         },
         { new: true }
       ).select('-password').exec();
+      
+      return this.addImageUrl(user);
     } catch (error) {
       throw error;
     }
@@ -69,11 +108,13 @@ export class UserService extends BaseService<any> {
   
   async updateUserStatus(userId: string, isActive: boolean): Promise<any | null> {
     try {
-      return await User.findByIdAndUpdate(
+      const user = await User.findByIdAndUpdate(
         userId,
         { isActive },
         { new: true }
       ).select('-password').exec();
+      
+      return this.addImageUrl(user);
     } catch (error) {
       throw error;
     }
@@ -94,7 +135,7 @@ export class UserService extends BaseService<any> {
       }
       
       return {
-        user,
+        user: this.addImageUrl(user),
         profile
       };
     } catch (error) {

@@ -55,10 +55,14 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
     if (!token || typeof token !== 'string') {
       throw new Error('Invalid verification token');
     }
-    const verified = await authService.verifyEmail(token);
+    const verifiedUser = await authService.verifyEmail(token);
+  
+    const authToken =  authService.generateToken(verifiedUser.id)
     
     return res.status(200).json({ 
-      success: verified, 
+      token: authToken,
+      user: verifiedUser,
+      success: verifiedUser.isVerified, 
       message: 'Email verified successfully' 
     });
   } catch (error) {
