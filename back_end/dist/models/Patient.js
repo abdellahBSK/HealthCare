@@ -4,6 +4,7 @@ const patientSchema = new mongoose.Schema({
     medicalHistory: String,
     allergies: [String],
     currentMedications: [String],
+    bloodType: { type: String, enum: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'] },
     emergencyContact: {
         name: String,
         relationship: String,

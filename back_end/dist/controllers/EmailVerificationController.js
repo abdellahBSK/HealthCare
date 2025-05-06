@@ -29,6 +29,7 @@ export const verifyEmail = async (req, res) => {
 export const reSendVerification = async (req, res) => {
     try {
         const emailParam = req.query.email;
+        console.log(typeof emailParam);
         if (!emailParam || typeof emailParam !== "string") {
             return res
                 .status(400)

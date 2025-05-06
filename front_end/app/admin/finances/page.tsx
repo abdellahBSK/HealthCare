@@ -82,7 +82,7 @@ const paymentMethodData = [
 const COLORS = ['#4F46E5', '#0D9488', '#FF7E00'];
 
 // Fonction pour formater les montants en euros
-const formatCurrency = (amount) => {
+const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency: 'EUR',

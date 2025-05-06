@@ -5,7 +5,7 @@ import expressListEndpoints from 'express-list-endpoints';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.BACKEND_PORT || 8000;
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
@@ -16,7 +16,7 @@ mongoose.connect(MONGO_URI)
 .then(() => {
   console.log('MongoDB Connected');
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT} with real time build`);
     console.log('✅ Available routes:');
     console.table(expressListEndpoints(app));
   });
