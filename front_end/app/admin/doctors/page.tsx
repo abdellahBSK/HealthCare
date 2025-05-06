@@ -17,7 +17,8 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-import { Search, MoreVertical, Plus, CheckCircle, XCircle } from 'lucide-react';
+import { Search, MoreVertical, Plus, CheckCircle, XCircle, UserCheck } from 'lucide-react';
+import Link from 'next/link';
 
 // Données fictives pour la démonstration
 const DOCTORS_DATA = [
@@ -41,9 +42,16 @@ export default function DoctorsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Médecins</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter un médecin
-        </Button>
+        <div className="flex space-x-2">
+          <Link href="/admin/doctor-verification">
+            <Button variant="outline" className="flex items-center">
+              <UserCheck className="mr-2 h-4 w-4" /> Vérification des médecins
+            </Button>
+          </Link>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" /> Ajouter un médecin
+          </Button>
+        </div>
       </div>
       
       <div className="flex items-center space-x-2">
