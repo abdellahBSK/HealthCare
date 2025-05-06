@@ -1,94 +1,150 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
-import Doctor from '../models/Doctor.js';
-import Patient from '../models/Patient.js';
-import dotenv from 'dotenv';
-import { sendVerificationEmail } from '../utils/sendVerificationEmail.js';
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined in the environment variables');
-  }
-
+import authService from '../services/AuthService.js';
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { 
-        email, 
-        password, 
-        firstName, 
-        lastName, 
-        userType, 
-        phoneNumber, 
-        dateOfBirth,
-        address,
-        profileImage} = req.body;
+    const userData = {
+      email: req.body.email,
+      password: req.body.password,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      name: `${req.body.firstName} ${req.body.lastName}`, // For compatibility with AuthService
+      userType: req.body.userType,
+      phoneNumber: req.body.phoneNumber,
+      dateOfBirth: req.body.dateOfBirth,
+      address: req.body.address,
+      profileImage: req.body.profileImage ?? null
+    };
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
+    const result = await authService.register(userData);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await User.create({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      userType,
-      phoneNumber,
-      dateOfBirth,
-      address,
-      profileImage: profileImage ?? null
+    return res.status(201).json({ 
+      message: 'User registered successfully',
+      token: result.token,
+      user: result.user
     });
-
-    // if(newUser.userType === 'doctor'){
-    //   await Doctor.create({ user: newUser._id });
-    // }else if (newUser.userType === 'patient') {
-    //   await Patient.create({ user: newUser._id });
-    // }
-
-  
-    const token = jwt.sign(
-      { userId: newUser._id },
-      JWT_SECRET,
-      { expiresIn: '10m' }
-    );
-    const emailResponse = await sendVerificationEmail(email,token);
-    console.log("email response: ",emailResponse);
-    return res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(400).json({ 
+      message: error instanceof Error ? error.message : 'Registration failed' 
+    });
   }
 };
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { email, password, userType } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'email or password are wrong' });
-    }
+    const result = await authService.login(email, password);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'email or password are wrong' });
-    }
-
-
-
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET);
-
-    return res.status(200).json({ token, user });
+    return res.status(200).json({
+      token: result.token,
+      user: result.user
+    });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(400).json({ message: error instanceof Error? error.message : 'Login failed' });
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { token } = req.query;
+    
+    
+    if (!token || typeof token !== 'string') {
+      throw new Error('Invalid verification token');
+    }
+    const verified = await authService.verifyEmail(token);
+    
+    return res.status(200).json({ 
+      success: verified, 
+      message: 'Email verified successfully' 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error ? error.message : 'Email verification failed' });
+  }
+};
+
+export const resendVerificationEmail = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { email } = req.body;
+    
+    const result = await authService.resendVerificationEmail(email);
+    
+    return res.status(200).json({ 
+      message: result.message 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to resend verification email' });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { email } = req.body;
+    
+    await authService.forgotPassword(email);
+    
+    return res.status(200).json({ 
+      message: 'Password reset email sent' 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to process forgot password request' });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { userId, token, newPassword } = req.body;
+    
+    await authService.resetPassword(userId, token, newPassword);
+    
+    return res.status(200).json({ 
+      message: 'Password reset successful' 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to reset password' });
+  }
+};
+
+export const getUserProfile = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const userId = req.params.id;
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+    
+    const userProfile = await authService.getUserProfile(userId);
+    
+    return res.status(200).json(userProfile);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to get user profile' });
+  }
+};
+
+export const changePassword = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const userId = req.params.id;
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+    
+    await authService.changePassword(userId, currentPassword, newPassword);
+    
+    return res.status(200).json({ 
+      message: 'Password changed successfully' 
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to change password' });
   }
 };

@@ -10,7 +10,11 @@ const patientSchema = new mongoose.Schema({
     name: String,
     relationship: String,
     phoneNumber: String
-  }
+  },
+  height: Number,
+  weight: Number,
+  bloodPressure: String,
+  heartRate: Number,
 });
 
 export default mongoose.models.Patient || mongoose.model('Patient', patientSchema);
