@@ -21,9 +21,12 @@ export default function EmailVerifiedPage() {
                 setLoading(true);
                 const response = await api.get(`/auth/verify_email?token=${token}`);
                 console.log(response.data);
-                // Assuming the API response includes user type information
+               
                 if (response.data && response.data.user) {
                     setUserType(response.data.user.userType);
+                   localStorage.setItem('userType', response.data.user.userType);
+                   localStorage.setItem('userId', response.data.user._id);
+                   localStorage.setItem('token', response.data.token);
                 }
             } catch (error: any) {
                 console.error('Email verification failed:', error);

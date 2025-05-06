@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { uploadProfileImage } from '../services/ImageUploadService.js';
 import userService from '../services/UserService.js';
 
 // Get all users
@@ -111,6 +112,38 @@ export const updateUserStatus = async (req: Request, res: Response) => {
     res.status(400).json({ 
       message: 'Error updating user status', 
       error: error instanceof Error ? error.message : String(error) 
+    });
+  }
+};
+
+// Add this method to your existing userController
+export const uploadUserProfileImage = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    
+    // Check if user is authorized (assuming req.user is set by auth middleware)
+    // if (req.user && req.user.id !== userId) {
+    //   return res.status(403).json({ message: 'Not authorized to update this profile' });
+    // }
+
+    const result = await uploadProfileImage(userId, req.file);
+
+    if (!result.success) {
+      return res.status(result.error ? 500 : 400).json({ 
+        message: result.message,
+        error: result.error
+      });
+    }
+
+    res.status(200).json({
+      message: result.message,
+      profileImage: result.profileImage
+    });
+  } catch (error) {
+    console.error('Error in uploadUserProfileImage controller:', error);
+    res.status(500).json({ 
+      message: 'Server error', 
+      error: error instanceof Error ? error.message : 'Unknown error' 
     });
   }
 };

@@ -7,8 +7,11 @@ import {
   deleteUser,
   getUserProfile,
   updateUserEmail,
-  updateUserStatus
+  updateUserStatus,
+  uploadUserProfileImage
 } from '../controllers/UserController.js';
+import upload from '../middlewares/uploadMiddleware.js';
+//import auth from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -23,5 +26,8 @@ router.delete('/:id', deleteUser);
 router.get('/:id/profile', getUserProfile);
 router.patch('/:id/email', updateUserEmail);
 router.patch('/:id/status', updateUserStatus);
+
+// Profile image upload route
+router.post('/:userId/upload-profile-image',upload.single('profileImage'), uploadUserProfileImage);
 
 export default router;

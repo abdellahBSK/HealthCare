@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     postalCode: String,
     country: String
   },
-  profileImage: String,
+  profileImage: {type: String, default: ''},
   isVerified: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
