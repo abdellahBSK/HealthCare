@@ -1,42 +1,83 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { Search, MoreVertical, Plus, CheckCircle, XCircle } from 'lucide-react';
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Search, MoreVertical, Plus, CheckCircle, XCircle } from "lucide-react";
 
 // Données fictives pour la démonstration
 const DOCTORS_DATA = [
-  { id: 1, name: 'Dr. Sarah Johnson', specialty: 'Cardiologie', email: 'sarah@example.com', verified: true, patients: 45, joinedDate: '2023-01-10' },
-  { id: 2, name: 'Dr. Michael Brown', specialty: 'Neurologie', email: 'michael@example.com', verified: true, patients: 32, joinedDate: '2023-02-15' },
-  { id: 3, name: 'Dr. Emily Davis', specialty: 'Pédiatrie', email: 'emily@example.com', verified: false, patients: 0, joinedDate: '2023-05-20' },
-  { id: 4, name: 'Dr. James Wilson', specialty: 'Dermatologie', email: 'james@example.com', verified: true, patients: 28, joinedDate: '2023-03-05' },
-  { id: 5, name: 'Dr. Lisa Martinez', specialty: 'Psychiatrie', email: 'lisa@example.com', verified: true, patients: 37, joinedDate: '2023-04-12' },
+  {
+    id: 1,
+    name: "Dr. Sarah Johnson",
+    speciality: "Cardiologie",
+    email: "sarah@example.com",
+    verified: true,
+    patients: 45,
+    joinedDate: "2023-01-10",
+  },
+  {
+    id: 2,
+    name: "Dr. Michael Brown",
+    speciality: "Neurologie",
+    email: "michael@example.com",
+    verified: true,
+    patients: 32,
+    joinedDate: "2023-02-15",
+  },
+  {
+    id: 3,
+    name: "Dr. Emily Davis",
+    speciality: "Pédiatrie",
+    email: "emily@example.com",
+    verified: false,
+    patients: 0,
+    joinedDate: "2023-05-20",
+  },
+  {
+    id: 4,
+    name: "Dr. James Wilson",
+    speciality: "Dermatologie",
+    email: "james@example.com",
+    verified: true,
+    patients: 28,
+    joinedDate: "2023-03-05",
+  },
+  {
+    id: 5,
+    name: "Dr. Lisa Martinez",
+    speciality: "Psychiatrie",
+    email: "lisa@example.com",
+    verified: true,
+    patients: 37,
+    joinedDate: "2023-04-12",
+  },
 ];
 
 export default function DoctorsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  const filteredDoctors = DOCTORS_DATA.filter(doctor => 
-    doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doctor.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredDoctors = DOCTORS_DATA.filter(
+    (doctor) =>
+      doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctor.speciality.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctor.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -45,7 +86,7 @@ export default function DoctorsPage() {
           <Plus className="mr-2 h-4 w-4" /> Ajouter un médecin
         </Button>
       </div>
-      
+
       <div className="flex items-center space-x-2">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -57,7 +98,7 @@ export default function DoctorsPage() {
           />
         </div>
       </div>
-      
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -75,7 +116,7 @@ export default function DoctorsPage() {
             {filteredDoctors.map((doctor) => (
               <TableRow key={doctor.id}>
                 <TableCell className="font-medium">{doctor.name}</TableCell>
-                <TableCell>{doctor.specialty}</TableCell>
+                <TableCell>{doctor.speciality}</TableCell>
                 <TableCell>{doctor.email}</TableCell>
                 <TableCell>
                   {doctor.verified ? (
@@ -97,9 +138,13 @@ export default function DoctorsPage() {
                       <DropdownMenuItem>Voir le profil</DropdownMenuItem>
                       <DropdownMenuItem>Modifier</DropdownMenuItem>
                       {!doctor.verified && (
-                        <DropdownMenuItem className="text-green-600">Vérifier</DropdownMenuItem>
+                        <DropdownMenuItem className="text-green-600">
+                          Vérifier
+                        </DropdownMenuItem>
                       )}
-                      <DropdownMenuItem className="text-red-600">Suspendre</DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600">
+                        Suspendre
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

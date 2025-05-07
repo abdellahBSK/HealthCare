@@ -1,108 +1,116 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, MoreVertical, Filter, Calendar } from 'lucide-react';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Search, MoreVertical, Filter, Calendar } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 
 // Données fictives pour la démonstration
 const APPOINTMENTS_DATA = [
-  { 
-    id: 1, 
-    patient: 'John Doe', 
-    doctor: 'Dr. Sarah Johnson', 
-    specialty: 'Cardiologie', 
-    date: '15 Juin 2023', 
-    time: '10:00', 
-    status: 'Confirmé' 
+  {
+    id: 1,
+    patient: "John Doe",
+    doctor: "Dr. Sarah Johnson",
+    speciality: "Cardiologie",
+    date: "15 Juin 2023",
+    time: "10:00",
+    status: "Confirmé",
   },
-  { 
-    id: 2, 
-    patient: 'Jane Smith', 
-    doctor: 'Dr. Michael Brown', 
-    specialty: 'Neurologie', 
-    date: '16 Juin 2023', 
-    time: '11:30', 
-    status: 'En attente' 
+  {
+    id: 2,
+    patient: "Jane Smith",
+    doctor: "Dr. Michael Brown",
+    speciality: "Neurologie",
+    date: "16 Juin 2023",
+    time: "11:30",
+    status: "En attente",
   },
-  { 
-    id: 3, 
-    patient: 'Robert Johnson', 
-    doctor: 'Dr. Emily Davis', 
-    specialty: 'Pédiatrie', 
-    date: '17 Juin 2023', 
-    time: '14:15', 
-    status: 'Confirmé' 
+  {
+    id: 3,
+    patient: "Robert Johnson",
+    doctor: "Dr. Emily Davis",
+    speciality: "Pédiatrie",
+    date: "17 Juin 2023",
+    time: "14:15",
+    status: "Confirmé",
   },
-  { 
-    id: 4, 
-    patient: 'Emily Davis', 
-    doctor: 'Dr. James Wilson', 
-    specialty: 'Dermatologie', 
-    date: '18 Juin 2023', 
-    time: '09:45', 
-    status: 'Annulé' 
+  {
+    id: 4,
+    patient: "Emily Davis",
+    doctor: "Dr. James Wilson",
+    speciality: "Dermatologie",
+    date: "18 Juin 2023",
+    time: "09:45",
+    status: "Annulé",
   },
-  { 
-    id: 5, 
-    patient: 'Michael Wilson', 
-    doctor: 'Dr. Lisa Martinez', 
-    specialty: 'Psychiatrie', 
-    date: '19 Juin 2023', 
-    time: '13:00', 
-    status: 'Confirmé' 
+  {
+    id: 5,
+    patient: "Michael Wilson",
+    doctor: "Dr. Lisa Martinez",
+    speciality: "Psychiatrie",
+    date: "19 Juin 2023",
+    time: "13:00",
+    status: "Confirmé",
   },
 ];
 
 // Données pour le graphique
-const appointmentsByDay = Array.from({ length: 30 }, (_, i) => i + 1).map((day) => ({
-  day,
-  date: `2023-06-${day.toString().padStart(2, '0')}`,
-  appointments: Math.floor(Math.random() * 10) + 1,
-}));
+const appointmentsByDay = Array.from({ length: 30 }, (_, i) => i + 1).map(
+  (day) => ({
+    day,
+    date: `2023-06-${day.toString().padStart(2, "0")}`,
+    appointments: Math.floor(Math.random() * 10) + 1,
+  })
+);
 
 export default function AppointmentsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('Tous');
-  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("Tous");
+
   const filteredAppointments = APPOINTMENTS_DATA.filter((appointment) => {
     const matchesSearch =
       appointment.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
       appointment.doctor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      appointment.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+      appointment.speciality.toLowerCase().includes(searchTerm.toLowerCase());
 
-    if (selectedFilter === 'Tous') return matchesSearch;
-    if (selectedFilter === 'Confirmé') return matchesSearch && appointment.status === 'Confirmé';
-    if (selectedFilter === 'En attente') return matchesSearch && appointment.status === 'En attente';
-    if (selectedFilter === 'Annulé') return matchesSearch && appointment.status === 'Annulé';
+    if (selectedFilter === "Tous") return matchesSearch;
+    if (selectedFilter === "Confirmé")
+      return matchesSearch && appointment.status === "Confirmé";
+    if (selectedFilter === "En attente")
+      return matchesSearch && appointment.status === "En attente";
+    if (selectedFilter === "Annulé")
+      return matchesSearch && appointment.status === "Annulé";
 
     return matchesSearch;
   });
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -111,14 +119,14 @@ export default function AppointmentsPage() {
           <CalendarIcon className="mr-2 h-4 w-4" /> Nouveau rendez-vous
         </Button>
       </div>
-      
+
       <Tabs defaultValue="liste" className="space-y-4">
         <TabsList>
           <TabsTrigger value="liste">Liste des rendez-vous</TabsTrigger>
           <TabsTrigger value="calendrier">Calendrier</TabsTrigger>
           <TabsTrigger value="statistiques">Statistiques</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="liste" className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="relative flex-1 max-w-sm">
@@ -130,7 +138,7 @@ export default function AppointmentsPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="ml-auto">
@@ -138,22 +146,24 @@ export default function AppointmentsPage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setSelectedFilter('Tous')}>
+                <DropdownMenuItem onClick={() => setSelectedFilter("Tous")}>
                   Tous les rendez-vous
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSelectedFilter('Confirmé')}>
+                <DropdownMenuItem onClick={() => setSelectedFilter("Confirmé")}>
                   Confirmés
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSelectedFilter('En attente')}>
+                <DropdownMenuItem
+                  onClick={() => setSelectedFilter("En attente")}
+                >
                   En attente
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSelectedFilter('Annulé')}>
+                <DropdownMenuItem onClick={() => setSelectedFilter("Annulé")}>
                   Annulés
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          
+
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -170,17 +180,23 @@ export default function AppointmentsPage() {
               <TableBody>
                 {filteredAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
-                    <TableCell className="font-medium">{appointment.patient}</TableCell>
+                    <TableCell className="font-medium">
+                      {appointment.patient}
+                    </TableCell>
                     <TableCell>{appointment.doctor}</TableCell>
-                    <TableCell>{appointment.specialty}</TableCell>
+                    <TableCell>{appointment.speciality}</TableCell>
                     <TableCell>{appointment.date}</TableCell>
                     <TableCell>{appointment.time}</TableCell>
                     <TableCell>
-                      <Badge variant={
-                        appointment.status === 'Confirmé' ? 'default' :
-                        appointment.status === 'En attente' ? 'secondary' :
-                        'destructive'
-                      }>
+                      <Badge
+                        variant={
+                          appointment.status === "Confirmé"
+                            ? "default"
+                            : appointment.status === "En attente"
+                            ? "secondary"
+                            : "destructive"
+                        }
+                      >
                         {appointment.status}
                       </Badge>
                     </TableCell>
@@ -195,7 +211,9 @@ export default function AppointmentsPage() {
                           <DropdownMenuItem>Voir les détails</DropdownMenuItem>
                           <DropdownMenuItem>Modifier</DropdownMenuItem>
                           <DropdownMenuItem>Envoyer un rappel</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">Annuler</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-600">
+                            Annuler
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -205,7 +223,7 @@ export default function AppointmentsPage() {
             </Table>
           </div>
         </TabsContent>
-        
+
         <TabsContent value="calendrier" className="space-y-4">
           <Card>
             <CardHeader>
@@ -214,15 +232,18 @@ export default function AppointmentsPage() {
             <CardContent>
               <div className="text-center p-12">
                 <Calendar className="mx-auto h-12 w-12 text-muted-foreground" />
-                <h3 className="mt-4 text-lg font-semibold">Calendrier interactif</h3>
+                <h3 className="mt-4 text-lg font-semibold">
+                  Calendrier interactif
+                </h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Le calendrier interactif sera implémenté ici avec une bibliothèque comme react-big-calendar.
+                  Le calendrier interactif sera implémenté ici avec une
+                  bibliothèque comme react-big-calendar.
                 </p>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="statistiques" className="space-y-4">
           <Card>
             <CardHeader>
@@ -235,11 +256,15 @@ export default function AppointmentsPage() {
                     <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                     <XAxis dataKey="day" />
                     <YAxis />
-                    <Tooltip 
-                      formatter={(value) => [`${value} rendez-vous`, 'Nombre']}
+                    <Tooltip
+                      formatter={(value) => [`${value} rendez-vous`, "Nombre"]}
                       labelFormatter={(label) => `Jour ${label}`}
                     />
-                    <Bar dataKey="appointments" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    <Bar
+                      dataKey="appointments"
+                      fill="hsl(var(--primary))"
+                      radius={[4, 4, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

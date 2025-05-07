@@ -1,18 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const specialtySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true
+const specialitySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  description: String,
+  icon: String,
+  commonConditions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "HealthCondition",
     },
-    description: String,
-    icon: String,
-    commonConditions: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'HealthCondition'
-    }]
+  ],
 });
 
-export default mongoose.models.Specialty ||
-mongoose.model('Specialty', specialtySchema);
+export default mongoose.models.Speciality ||
+  mongoose.model("Speciality", specialitySchema);

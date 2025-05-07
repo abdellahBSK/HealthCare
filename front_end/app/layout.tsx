@@ -21,24 +21,18 @@ export const metadata: Metadata = {
     "Connect with top healthcare professionals through secure video consultations",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+// Add this import
+import { AuthProvider } from "@/contexts/AuthContext"
 
- 
-
- 
+// Wrap your layout component with AuthProvider
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${outfit.variable} ${inter.variable} font-sans`}>
-        <Providers>
-         
-        {children}
-      
-        </Providers>
+    <html lang="en">
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
-  );
+  )
 }

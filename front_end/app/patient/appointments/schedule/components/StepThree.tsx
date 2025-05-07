@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { Filter, Star, Clock, MapPin } from "lucide-react"
-import { Doctor } from "../types"
+import { Filter, Star, Clock, MapPin } from "lucide-react";
+import { Doctor } from "../types";
 
 interface StepThreeProps {
-  selectedDoctorTypeTitle: string
-  selectedReasons: any[]
-  sortBy: "rating" | "availability"
-  setSortBy: (sort: "rating" | "availability") => void
-  filteredDoctors: Doctor[]
-  selectedDoctor: string | null
-  showTimeSlots: string | null
-  toggleTimeSlots: (doctorId: string) => void
-  selectedTimeSlot: string | null
-  selectTimeSlot: (slot: string) => void
-  viewDoctorDetails: (doctorId: string) => void
+  selectedDoctorTypeTitle: string;
+  selectedReasons: any[];
+  sortBy: "rating" | "availability";
+  setSortBy: (sort: "rating" | "availability") => void;
+  filteredDoctors: Doctor[];
+  selectedDoctor: string | null;
+  showTimeSlots: string | null;
+  toggleTimeSlots: (doctorId: string) => void;
+  selectedTimeSlot: string | null;
+  selectTimeSlot: (slot: string) => void;
+  viewDoctorDetails: (doctorId: string) => void;
 }
 
 export default function StepThree({
@@ -28,15 +28,19 @@ export default function StepThree({
   toggleTimeSlots,
   selectedTimeSlot,
   selectTimeSlot,
-  viewDoctorDetails
+  viewDoctorDetails,
 }: StepThreeProps) {
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-xl font-medium text-gray-800">Select a Doctor</h2>
-        <button className="text-[#1e3a8a] text-sm font-medium hover:underline">All Ratings</button>
+        <button className="text-[#1e3a8a] text-sm font-medium hover:underline">
+          All Ratings
+        </button>
       </div>
-      <p className="text-gray-600 mb-4">Choose from our {selectedDoctorTypeTitle} specialists</p>
+      <p className="text-gray-600 mb-4">
+        Choose from our {selectedDoctorTypeTitle} specialists
+      </p>
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
@@ -46,7 +50,8 @@ export default function StepThree({
           {selectedReasons.length > 0 && (
             <div className="flex items-center gap-2 bg-[#f0f9ff] text-[#0369a1] px-3 py-1.5 rounded-full text-sm">
               <span>
-                {selectedReasons.length} condition{selectedReasons.length > 1 ? "s" : ""}
+                {selectedReasons.length} condition
+                {selectedReasons.length > 1 ? "s" : ""}
               </span>
             </div>
           )}
@@ -55,13 +60,21 @@ export default function StepThree({
           <span className="text-sm text-gray-600">Sort by:</span>
           <div className="flex rounded-lg border border-gray-200 overflow-hidden">
             <button
-              className={`px-3 py-1.5 text-sm ${sortBy === "rating" ? "bg-[#1e3a8a] text-white" : "bg-white text-gray-700"}`}
+              className={`px-3 py-1.5 text-sm ${
+                sortBy === "rating"
+                  ? "bg-[#1e3a8a] text-white"
+                  : "bg-white text-gray-700"
+              }`}
               onClick={() => setSortBy("rating")}
             >
               Rating
             </button>
             <button
-              className={`px-3 py-1.5 text-sm ${sortBy === "availability" ? "bg-[#1e3a8a] text-white" : "bg-white text-gray-700"}`}
+              className={`px-3 py-1.5 text-sm ${
+                sortBy === "availability"
+                  ? "bg-[#1e3a8a] text-white"
+                  : "bg-white text-gray-700"
+              }`}
               onClick={() => setSortBy("availability")}
             >
               Availability
@@ -78,7 +91,9 @@ export default function StepThree({
           <div
             key={doctor.id}
             className={`border rounded-lg overflow-hidden transition-all ${
-              selectedDoctor === doctor.id ? "border-[#1e3a8a] ring-2 ring-[#1e3a8a]" : "border-gray-200"
+              selectedDoctor === doctor.id
+                ? "border-[#1e3a8a] ring-2 ring-[#1e3a8a]"
+                : "border-gray-200"
             }`}
           >
             <div className="p-4">
@@ -93,8 +108,12 @@ export default function StepThree({
                 <div className="flex-1">
                   <div className="flex justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-800">{doctor.name}</h3>
-                      <p className="text-gray-600 text-sm">{doctor.specialty}</p>
+                      <h3 className="font-medium text-gray-800">
+                        {doctor.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm">
+                        {doctor.speciality}
+                      </p>
                     </div>
                     <button
                       className="text-[#1e3a8a] text-sm font-medium hover:underline"
@@ -106,24 +125,36 @@ export default function StepThree({
                   <div className="flex items-center gap-4 mt-2">
                     <div className="flex items-center">
                       <Star className="h-4 w-4 text-[#f59e0b] fill-[#f59e0b]" />
-                      <span className="ml-1 text-sm font-medium">{doctor.rating}/5</span>
-                      <span className="ml-1 text-xs text-gray-500">({doctor.reviews})</span>
+                      <span className="ml-1 text-sm font-medium">
+                        {doctor.rating}/5
+                      </span>
+                      <span className="ml-1 text-xs text-gray-500">
+                        ({doctor.reviews})
+                      </span>
                     </div>
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 text-gray-500" />
-                      <span className="ml-1 text-sm text-gray-600">{doctor.experience} years</span>
+                      <span className="ml-1 text-sm text-gray-600">
+                        {doctor.experience} years
+                      </span>
                     </div>
                     <div className="flex items-center">
                       <MapPin className="h-4 w-4 text-gray-500" />
-                      <span className="ml-1 text-sm text-gray-600">{doctor.distance}</span>
+                      <span className="ml-1 text-sm text-gray-600">
+                        {doctor.distance}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-gray-700">Next Available</div>
-                  <div className="text-sm text-gray-800">{doctor.availability[0].day}</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    Next Available
+                  </div>
+                  <div className="text-sm text-gray-800">
+                    {doctor.availability[0].day}
+                  </div>
                 </div>
                 <button
                   onClick={() => toggleTimeSlots(doctor.id)}
@@ -136,8 +167,8 @@ export default function StepThree({
                   {selectedDoctor === doctor.id && selectedTimeSlot
                     ? "Time Selected"
                     : showTimeSlots === doctor.id
-                      ? "Hide Times"
-                      : "Select Time"}
+                    ? "Hide Times"
+                    : "Select Time"}
                 </button>
               </div>
             </div>
@@ -146,7 +177,9 @@ export default function StepThree({
               <div className="bg-gray-50 p-4 border-t border-gray-200">
                 {doctor.availability.map((avail) => (
                   <div key={avail.day} className="mb-3 last:mb-0">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">{avail.day}</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      {avail.day}
+                    </h4>
                     <div className="flex flex-wrap gap-2">
                       {avail.slots.map((slot) => (
                         <button
@@ -170,5 +203,5 @@ export default function StepThree({
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Search,
   Circle,
@@ -25,115 +25,121 @@ import {
   Star,
   MapPin,
   Filter,
-} from "lucide-react"
-import DoctorDetails from "./doctor-details"
+} from "lucide-react";
+import DoctorDetails from "./doctor-details";
 
 type Reason = {
-  id: string
-  category: string
-  title: string
-  description: string
-}
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+};
 
 type DoctorType = {
-  id: string
-  title: string
-  description: string
-  icon: React.ReactNode
-  specialties: string[]
-  matchCount?: number
-}
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  specialties: string[];
+  matchCount?: number;
+};
 
 type Doctor = {
-  id: string
-  name: string
-  specialty: string
-  rating: number
-  reviews: number
-  experience: number
-  education: string
-  location: string
-  distance: string
+  id: string;
+  name: string;
+  speciality: string;
+  rating: number;
+  reviews: number;
+  experience: number;
+  education: string;
+  location: string;
+  distance: string;
   availability: {
-    day: string
-    slots: string[]
-  }[]
-  about: string
-  languages: string[]
-  doctorTypeId: string
-  image: string
-}
+    day: string;
+    slots: string[];
+  }[];
+  about: string;
+  languages: string[];
+  doctorTypeId: string;
+  image: string;
+};
 
 export default function AppointmentBooking() {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [selectedReasons, setSelectedReasons] = useState<Reason[]>([])
-  const [selectedDoctorType, setSelectedDoctorType] = useState<string | null>(null)
-  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null)
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null)
-  const [showTimeSlots, setShowTimeSlots] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<"rating" | "availability">("rating")
-  const [viewingDoctorDetails, setViewingDoctorDetails] = useState<string | null>(null)
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedReasons, setSelectedReasons] = useState<Reason[]>([]);
+  const [selectedDoctorType, setSelectedDoctorType] = useState<string | null>(
+    null
+  );
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [showTimeSlots, setShowTimeSlots] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<"rating" | "availability">("rating");
+  const [viewingDoctorDetails, setViewingDoctorDetails] = useState<
+    string | null
+  >(null);
 
   const handleReasonSelect = (reason: Reason) => {
     // Check if the reason is already selected
     if (selectedReasons.some((item) => item.id === reason.id)) {
       // If selected, remove it
-      setSelectedReasons(selectedReasons.filter((item) => item.id !== reason.id))
+      setSelectedReasons(
+        selectedReasons.filter((item) => item.id !== reason.id)
+      );
     } else {
       // If not selected and less than 3 items are selected, add it
       if (selectedReasons.length < 3) {
-        setSelectedReasons([...selectedReasons, reason])
+        setSelectedReasons([...selectedReasons, reason]);
       }
     }
-  }
+  };
 
   const isSelected = (id: string) => {
-    return selectedReasons.some((item) => item.id === id)
-  }
+    return selectedReasons.some((item) => item.id === id);
+  };
 
   const handleContinue = () => {
     if (currentStep === 1 && selectedReasons.length > 0) {
-      setCurrentStep(2)
+      setCurrentStep(2);
     } else if (currentStep === 2 && selectedDoctorType) {
-      setCurrentStep(3)
+      setCurrentStep(3);
     } else if (currentStep === 3 && selectedDoctor && selectedTimeSlot) {
-      setCurrentStep(4)
+      setCurrentStep(4);
     }
-  }
+  };
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
 
       // Reset selections when going back
       if (currentStep === 3) {
-        setSelectedDoctor(null)
-        setSelectedTimeSlot(null)
-        setShowTimeSlots(null)
+        setSelectedDoctor(null);
+        setSelectedTimeSlot(null);
+        setShowTimeSlots(null);
       }
     }
-  }
+  };
 
   const toggleTimeSlots = (doctorId: string) => {
     if (showTimeSlots === doctorId) {
-      setShowTimeSlots(null)
+      setShowTimeSlots(null);
     } else {
-      setShowTimeSlots(doctorId)
-      setSelectedDoctor(doctorId)
+      setShowTimeSlots(doctorId);
+      setSelectedDoctor(doctorId);
     }
-  }
+  };
 
   const selectTimeSlot = (slot: string) => {
-    setSelectedTimeSlot(slot)
-  }
+    setSelectedTimeSlot(slot);
+  };
 
   const viewDoctorDetails = (doctorId: string) => {
-    setViewingDoctorDetails(doctorId)
-  }
+    setViewingDoctorDetails(doctorId);
+  };
 
   const closeDoctorDetails = () => {
-    setViewingDoctorDetails(null)
-  }
+    setViewingDoctorDetails(null);
+  };
 
   const commonHealthIssues = [
     {
@@ -160,7 +166,7 @@ export default function AppointmentBooking() {
       title: "Allergies",
       description: "Seasonal allergies or reactions",
     },
-  ]
+  ];
 
   const chronicConditions = [
     {
@@ -181,27 +187,67 @@ export default function AppointmentBooking() {
       title: "Heart Disease",
       description: "Cardiovascular health issues",
     },
-    { id: "arthritis", category: "Chronic Conditions", title: "Arthritis", description: "Joint pain and inflammation" },
-  ]
+    {
+      id: "arthritis",
+      category: "Chronic Conditions",
+      title: "Arthritis",
+      description: "Joint pain and inflammation",
+    },
+  ];
 
   const mentalHealth = [
-    { id: "anxiety", category: "Mental Health", title: "Anxiety", description: "Stress and anxiety management" },
-    { id: "depression", category: "Mental Health", title: "Depression", description: "Mood disorders and support" },
-    { id: "sleep", category: "Mental Health", title: "Sleep Issues", description: "Insomnia or sleep disorders" },
-    { id: "adhd", category: "Mental Health", title: "ADHD", description: "Attention and focus concerns" },
-  ]
+    {
+      id: "anxiety",
+      category: "Mental Health",
+      title: "Anxiety",
+      description: "Stress and anxiety management",
+    },
+    {
+      id: "depression",
+      category: "Mental Health",
+      title: "Depression",
+      description: "Mood disorders and support",
+    },
+    {
+      id: "sleep",
+      category: "Mental Health",
+      title: "Sleep Issues",
+      description: "Insomnia or sleep disorders",
+    },
+    {
+      id: "adhd",
+      category: "Mental Health",
+      title: "ADHD",
+      description: "Attention and focus concerns",
+    },
+  ];
 
   const specializedCare = [
-    { id: "skin", category: "Specialized Care", title: "Skin Conditions", description: "Dermatological concerns" },
-    { id: "eye", category: "Specialized Care", title: "Eye Problems", description: "Vision or eye-related issues" },
-    { id: "dental", category: "Specialized Care", title: "Dental Care", description: "Oral health concerns" },
+    {
+      id: "skin",
+      category: "Specialized Care",
+      title: "Skin Conditions",
+      description: "Dermatological concerns",
+    },
+    {
+      id: "eye",
+      category: "Specialized Care",
+      title: "Eye Problems",
+      description: "Vision or eye-related issues",
+    },
+    {
+      id: "dental",
+      category: "Specialized Care",
+      title: "Dental Care",
+      description: "Oral health concerns",
+    },
     {
       id: "physical",
       category: "Specialized Care",
       title: "Physical Therapy",
       description: "Rehabilitation and movement",
     },
-  ]
+  ];
 
   const doctorTypes: DoctorType[] = [
     {
@@ -209,7 +255,13 @@ export default function AppointmentBooking() {
       title: "General Practitioner",
       description: "For common health issues and routine check-ups",
       icon: <Circle className="h-5 w-5 text-white" />,
-      specialties: ["Fever & Flu", "Headache", "Stomach Issues", "Allergies", "Hypertension"],
+      specialties: [
+        "Fever & Flu",
+        "Headache",
+        "Stomach Issues",
+        "Allergies",
+        "Hypertension",
+      ],
     },
     {
       id: "psychological",
@@ -253,13 +305,13 @@ export default function AppointmentBooking() {
       icon: <Bone className="h-5 w-5 text-white" />,
       specialties: ["Arthritis", "Physical Therapy"],
     },
-  ]
+  ];
 
   const doctors: Doctor[] = [
     {
       id: "dr-sarah-wilson",
       name: "Dr. Sarah Wilson",
-      specialty: "General Medicine",
+      speciality: "General Medicine",
       rating: 4.8,
       reviews: 156,
       experience: 12,
@@ -285,7 +337,7 @@ export default function AppointmentBooking() {
     {
       id: "dr-michael-chen",
       name: "Dr. Michael Chen",
-      specialty: "Family Medicine",
+      speciality: "Family Medicine",
       rating: 4.9,
       reviews: 203,
       experience: 8,
@@ -311,7 +363,7 @@ export default function AppointmentBooking() {
     {
       id: "dr-emily-patel",
       name: "Dr. Emily Patel",
-      specialty: "Internal Medicine",
+      speciality: "Internal Medicine",
       rating: 4.7,
       reviews: 128,
       experience: 15,
@@ -337,7 +389,7 @@ export default function AppointmentBooking() {
     {
       id: "dr-james-rodriguez",
       name: "Dr. James Rodriguez",
-      specialty: "Cardiology",
+      speciality: "Cardiology",
       rating: 4.9,
       reviews: 187,
       experience: 20,
@@ -363,7 +415,7 @@ export default function AppointmentBooking() {
     {
       id: "dr-lisa-thompson",
       name: "Dr. Lisa Thompson",
-      specialty: "Psychiatry",
+      speciality: "Psychiatry",
       rating: 4.8,
       reviews: 142,
       experience: 10,
@@ -389,7 +441,7 @@ export default function AppointmentBooking() {
     {
       id: "dr-robert-kim",
       name: "Dr. Robert Kim",
-      specialty: "Dermatology",
+      speciality: "Dermatology",
       rating: 4.7,
       reviews: 165,
       experience: 14,
@@ -415,7 +467,7 @@ export default function AppointmentBooking() {
     {
       id: "dr-olivia-martinez",
       name: "Dr. Olivia Martinez",
-      specialty: "Ophthalmology",
+      speciality: "Ophthalmology",
       rating: 4.9,
       reviews: 178,
       experience: 16,
@@ -438,57 +490,61 @@ export default function AppointmentBooking() {
       doctorTypeId: "ophthalmologist",
       image: "/placeholder.svg?height=200&width=200",
     },
-  ]
+  ];
 
   // Filter doctor types based on selected reasons
   const getRecommendedDoctorTypes = () => {
-    if (selectedReasons.length === 0) return doctorTypes
+    if (selectedReasons.length === 0) return doctorTypes;
 
-    const selectedTitles = selectedReasons.map((reason) => reason.title)
+    const selectedTitles = selectedReasons.map((reason) => reason.title);
 
     return doctorTypes
       .map((doctorType) => {
-        const matchCount = doctorType.specialties.filter((specialty) => selectedTitles.includes(specialty)).length
+        const matchCount = doctorType.specialties.filter((speciality) =>
+          selectedTitles.includes(speciality)
+        ).length;
 
         return {
           ...doctorType,
           matchCount,
-        }
+        };
       })
-      .sort((a, b) => b.matchCount - a.matchCount)
-  }
+      .sort((a, b) => b.matchCount - a.matchCount);
+  };
 
   // Filter doctors based on selected doctor type
   const getFilteredDoctors = () => {
-    if (!selectedDoctorType) return []
+    if (!selectedDoctorType) return [];
 
-    const filtered = doctors.filter((doctor) => doctor.doctorTypeId === selectedDoctorType)
+    const filtered = doctors.filter(
+      (doctor) => doctor.doctorTypeId === selectedDoctorType
+    );
 
     // Sort doctors based on the selected sort criteria
     if (sortBy === "rating") {
-      return filtered.sort((a, b) => b.rating - a.rating)
+      return filtered.sort((a, b) => b.rating - a.rating);
     } else {
       // Sort by availability (doctors with today slots first)
       return filtered.sort((a, b) => {
-        const aHasToday = a.availability.some((avail) => avail.day === "Today")
-        const bHasToday = b.availability.some((avail) => avail.day === "Today")
+        const aHasToday = a.availability.some((avail) => avail.day === "Today");
+        const bHasToday = b.availability.some((avail) => avail.day === "Today");
 
-        if (aHasToday && !bHasToday) return -1
-        if (!aHasToday && bHasToday) return 1
-        return b.rating - a.rating // If tie, sort by rating
-      })
+        if (aHasToday && !bHasToday) return -1;
+        if (!aHasToday && bHasToday) return 1;
+        return b.rating - a.rating; // If tie, sort by rating
+      });
     }
-  }
+  };
 
-  const recommendedDoctorTypes = getRecommendedDoctorTypes()
-  const filteredDoctors = getFilteredDoctors()
+  const recommendedDoctorTypes = getRecommendedDoctorTypes();
+  const filteredDoctors = getFilteredDoctors();
 
   // Get the selected doctor type title
   const getSelectedDoctorTypeTitle = () => {
-    if (!selectedDoctorType) return ""
-    const doctorType = doctorTypes.find((dt) => dt.id === selectedDoctorType)
-    return doctorType ? doctorType.title : ""
-  }
+    if (!selectedDoctorType) return "";
+    const doctorType = doctorTypes.find((dt) => dt.id === selectedDoctorType);
+    return doctorType ? doctorType.title : "";
+  };
 
   // If viewing doctor details, show that component
   if (viewingDoctorDetails) {
@@ -497,12 +553,12 @@ export default function AppointmentBooking() {
         doctorId={viewingDoctorDetails}
         onBack={closeDoctorDetails}
         onBookAppointment={() => {
-          closeDoctorDetails()
+          closeDoctorDetails();
           // You could also set the selected doctor here if needed
           // setSelectedDoctor(viewingDoctorDetails);
         }}
       />
-    )
+    );
   }
 
   return (
@@ -531,7 +587,9 @@ export default function AppointmentBooking() {
                 For Doctors <ChevronDown className="ml-1 h-4 w-4" />
               </button>
             </div>
-            <button className="text-gray-700 hover:text-[#1e3a8a] transition-colors">About</button>
+            <button className="text-gray-700 hover:text-[#1e3a8a] transition-colors">
+              About
+            </button>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -556,35 +614,57 @@ export default function AppointmentBooking() {
               <div className="inline-block px-3 py-1 bg-[#e6f7f2] text-[#0d9488] text-sm font-medium rounded-full mb-4">
                 Premium Healthcare Anywhere
               </div>
-              <h1 className="text-2xl font-bold text-[#1e3a8a]">Book an Appointment</h1>
+              <h1 className="text-2xl font-bold text-[#1e3a8a]">
+                Book an Appointment
+              </h1>
             </div>
             <div className="flex items-center space-x-2">
               <div className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full ${currentStep >= 1 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"} text-white flex items-center justify-center text-sm font-medium`}
+                  className={`w-8 h-8 rounded-full ${
+                    currentStep >= 1 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                  } text-white flex items-center justify-center text-sm font-medium`}
                 >
                   1
                 </div>
-                <div className={`w-12 h-1 ${currentStep >= 2 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"}`}></div>
+                <div
+                  className={`w-12 h-1 ${
+                    currentStep >= 2 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                  }`}
+                ></div>
               </div>
               <div className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full ${currentStep >= 2 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"} text-white flex items-center justify-center text-sm font-medium`}
+                  className={`w-8 h-8 rounded-full ${
+                    currentStep >= 2 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                  } text-white flex items-center justify-center text-sm font-medium`}
                 >
                   2
                 </div>
-                <div className={`w-12 h-1 ${currentStep >= 3 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"}`}></div>
+                <div
+                  className={`w-12 h-1 ${
+                    currentStep >= 3 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                  }`}
+                ></div>
               </div>
               <div className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full ${currentStep >= 3 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"} text-white flex items-center justify-center text-sm font-medium`}
+                  className={`w-8 h-8 rounded-full ${
+                    currentStep >= 3 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                  } text-white flex items-center justify-center text-sm font-medium`}
                 >
                   3
                 </div>
-                <div className={`w-12 h-1 ${currentStep >= 4 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"}`}></div>
+                <div
+                  className={`w-12 h-1 ${
+                    currentStep >= 4 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                  }`}
+                ></div>
               </div>
               <div
-                className={`w-8 h-8 rounded-full ${currentStep >= 4 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"} text-white flex items-center justify-center text-sm font-medium`}
+                className={`w-8 h-8 rounded-full ${
+                  currentStep >= 4 ? "bg-[#1e3a8a]" : "bg-[#94a3b8]"
+                } text-white flex items-center justify-center text-sm font-medium`}
               >
                 4
               </div>
@@ -594,18 +674,28 @@ export default function AppointmentBooking() {
           {currentStep === 1 && (
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-medium text-gray-800">What&apos;s the reason for your visit?</h2>
+                <h2 className="text-xl font-medium text-gray-800">
+                  What&apos;s the reason for your visit?
+                </h2>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-600">Selected:</span>
+                  <span className="text-sm font-medium text-gray-600">
+                    Selected:
+                  </span>
                   <span
-                    className={`text-sm font-bold ${selectedReasons.length === 3 ? "text-[#f59e0b]" : "text-[#1e3a8a]"}`}
+                    className={`text-sm font-bold ${
+                      selectedReasons.length === 3
+                        ? "text-[#f59e0b]"
+                        : "text-[#1e3a8a]"
+                    }`}
                   >
                     {selectedReasons.length}/3
                   </span>
                 </div>
               </div>
               <div className="flex items-center mb-4">
-                <p className="text-gray-600">Choose a category or search for specific symptoms</p>
+                <p className="text-gray-600">
+                  Choose a category or search for specific symptoms
+                </p>
                 {selectedReasons.length === 3 && (
                   <div className="ml-2 flex items-center text-[#f59e0b] text-sm">
                     <AlertCircle className="h-4 w-4 mr-1" />
@@ -616,7 +706,9 @@ export default function AppointmentBooking() {
 
               {selectedReasons.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Selected reasons:</h3>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">
+                    Selected reasons:
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedReasons.map((reason) => (
                       <div
@@ -667,7 +759,9 @@ export default function AppointmentBooking() {
                     <div className="w-10 h-10 bg-[#1e3a8a] rounded-lg flex items-center justify-center">
                       <Circle className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-medium text-[#1e3a8a]">Common Health Issues</h3>
+                    <h3 className="text-lg font-medium text-[#1e3a8a]">
+                      Common Health Issues
+                    </h3>
                   </div>
 
                   <div className="space-y-3">
@@ -675,22 +769,32 @@ export default function AppointmentBooking() {
                       <button
                         key={reason.id}
                         onClick={() => handleReasonSelect(reason)}
-                        disabled={selectedReasons.length >= 3 && !isSelected(reason.id)}
+                        disabled={
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                        }
                         className={`w-full text-left border rounded-lg p-4 transition-all ${
                           isSelected(reason.id)
                             ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]"
                             : "border-gray-200 hover:border-[#1e3a8a]"
-                        } ${selectedReasons.length >= 3 && !isSelected(reason.id) ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        } ${
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
                       >
                         <div className="flex justify-between">
-                          <h4 className="font-medium text-gray-800">{reason.title}</h4>
+                          <h4 className="font-medium text-gray-800">
+                            {reason.title}
+                          </h4>
                           {isSelected(reason.id) && (
                             <div className="bg-[#1e3a8a] text-white rounded-full p-1">
                               <Check className="h-4 w-4" />
                             </div>
                           )}
                         </div>
-                        <p className="text-gray-600 text-sm">{reason.description}</p>
+                        <p className="text-gray-600 text-sm">
+                          {reason.description}
+                        </p>
                       </button>
                     ))}
                   </div>
@@ -702,7 +806,9 @@ export default function AppointmentBooking() {
                     <div className="w-10 h-10 bg-[#1e3a8a] rounded-lg flex items-center justify-center">
                       <Square className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-medium text-[#1e3a8a]">Chronic Conditions</h3>
+                    <h3 className="text-lg font-medium text-[#1e3a8a]">
+                      Chronic Conditions
+                    </h3>
                   </div>
 
                   <div className="space-y-3">
@@ -710,22 +816,32 @@ export default function AppointmentBooking() {
                       <button
                         key={reason.id}
                         onClick={() => handleReasonSelect(reason)}
-                        disabled={selectedReasons.length >= 3 && !isSelected(reason.id)}
+                        disabled={
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                        }
                         className={`w-full text-left border rounded-lg p-4 transition-all ${
                           isSelected(reason.id)
                             ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]"
                             : "border-gray-200 hover:border-[#1e3a8a]"
-                        } ${selectedReasons.length >= 3 && !isSelected(reason.id) ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        } ${
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
                       >
                         <div className="flex justify-between">
-                          <h4 className="font-medium text-gray-800">{reason.title}</h4>
+                          <h4 className="font-medium text-gray-800">
+                            {reason.title}
+                          </h4>
                           {isSelected(reason.id) && (
                             <div className="bg-[#1e3a8a] text-white rounded-full p-1">
                               <Check className="h-4 w-4" />
                             </div>
                           )}
                         </div>
-                        <p className="text-gray-600 text-sm">{reason.description}</p>
+                        <p className="text-gray-600 text-sm">
+                          {reason.description}
+                        </p>
                       </button>
                     ))}
                   </div>
@@ -737,7 +853,9 @@ export default function AppointmentBooking() {
                     <div className="w-10 h-10 bg-[#1e3a8a] rounded-lg flex items-center justify-center">
                       <Circle className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-medium text-[#1e3a8a]">Mental Health</h3>
+                    <h3 className="text-lg font-medium text-[#1e3a8a]">
+                      Mental Health
+                    </h3>
                   </div>
 
                   <div className="space-y-3">
@@ -745,22 +863,32 @@ export default function AppointmentBooking() {
                       <button
                         key={reason.id}
                         onClick={() => handleReasonSelect(reason)}
-                        disabled={selectedReasons.length >= 3 && !isSelected(reason.id)}
+                        disabled={
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                        }
                         className={`w-full text-left border rounded-lg p-4 transition-all ${
                           isSelected(reason.id)
                             ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]"
                             : "border-gray-200 hover:border-[#1e3a8a]"
-                        } ${selectedReasons.length >= 3 && !isSelected(reason.id) ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        } ${
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
                       >
                         <div className="flex justify-between">
-                          <h4 className="font-medium text-gray-800">{reason.title}</h4>
+                          <h4 className="font-medium text-gray-800">
+                            {reason.title}
+                          </h4>
                           {isSelected(reason.id) && (
                             <div className="bg-[#1e3a8a] text-white rounded-full p-1">
                               <Check className="h-4 w-4" />
                             </div>
                           )}
                         </div>
-                        <p className="text-gray-600 text-sm">{reason.description}</p>
+                        <p className="text-gray-600 text-sm">
+                          {reason.description}
+                        </p>
                       </button>
                     ))}
                   </div>
@@ -772,7 +900,9 @@ export default function AppointmentBooking() {
                     <div className="w-10 h-10 bg-[#1e3a8a] rounded-lg flex items-center justify-center">
                       <Square className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-medium text-[#1e3a8a]">Specialized Care</h3>
+                    <h3 className="text-lg font-medium text-[#1e3a8a]">
+                      Specialized Care
+                    </h3>
                   </div>
 
                   <div className="space-y-3">
@@ -780,22 +910,32 @@ export default function AppointmentBooking() {
                       <button
                         key={reason.id}
                         onClick={() => handleReasonSelect(reason)}
-                        disabled={selectedReasons.length >= 3 && !isSelected(reason.id)}
+                        disabled={
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                        }
                         className={`w-full text-left border rounded-lg p-4 transition-all ${
                           isSelected(reason.id)
                             ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]"
                             : "border-gray-200 hover:border-[#1e3a8a]"
-                        } ${selectedReasons.length >= 3 && !isSelected(reason.id) ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        } ${
+                          selectedReasons.length >= 3 && !isSelected(reason.id)
+                            ? "opacity-50 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }`}
                       >
                         <div className="flex justify-between">
-                          <h4 className="font-medium text-gray-800">{reason.title}</h4>
+                          <h4 className="font-medium text-gray-800">
+                            {reason.title}
+                          </h4>
                           {isSelected(reason.id) && (
                             <div className="bg-[#1e3a8a] text-white rounded-full p-1">
                               <Check className="h-4 w-4" />
                             </div>
                           )}
                         </div>
-                        <p className="text-gray-600 text-sm">{reason.description}</p>
+                        <p className="text-gray-600 text-sm">
+                          {reason.description}
+                        </p>
                       </button>
                     ))}
                   </div>
@@ -806,12 +946,18 @@ export default function AppointmentBooking() {
 
           {currentStep === 2 && (
             <div className="mb-8">
-              <h2 className="text-xl font-medium text-gray-800 mb-2">Select Doctor Type</h2>
-              <p className="text-gray-600 mb-6">Choose the type of doctor that best fits your needs</p>
+              <h2 className="text-xl font-medium text-gray-800 mb-2">
+                Select Doctor Type
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Choose the type of doctor that best fits your needs
+              </p>
 
               {selectedReasons.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">Based on your selected reasons:</h3>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">
+                    Based on your selected reasons:
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedReasons.map((reason) => (
                       <div
@@ -842,8 +988,12 @@ export default function AppointmentBooking() {
                           {doctorType.icon}
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-800">{doctorType.title}</h4>
-                          <p className="text-gray-600 text-sm">{doctorType.description}</p>
+                          <h4 className="font-medium text-gray-800">
+                            {doctorType.title}
+                          </h4>
+                          <p className="text-gray-600 text-sm">
+                            {doctorType.description}
+                          </p>
                         </div>
                       </div>
                       {selectedDoctorType === doctorType.id && (
@@ -854,13 +1004,16 @@ export default function AppointmentBooking() {
                     </div>
 
                     {/* Show match indicator if there are selected reasons */}
-                    {selectedReasons.length > 0 && doctorType.matchCount !== undefined && doctorType.matchCount > 0 && (
-                      <div className="mt-3 flex items-center">
-                        <div className="bg-[#e6f7f2] text-[#0d9488] text-xs font-medium px-2 py-1 rounded-full">
-                          Recommended for {doctorType.matchCount} of your selected conditions
+                    {selectedReasons.length > 0 &&
+                      doctorType.matchCount !== undefined &&
+                      doctorType.matchCount > 0 && (
+                        <div className="mt-3 flex items-center">
+                          <div className="bg-[#e6f7f2] text-[#0d9488] text-xs font-medium px-2 py-1 rounded-full">
+                            Recommended for {doctorType.matchCount} of your
+                            selected conditions
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </button>
                 ))}
               </div>
@@ -870,10 +1023,16 @@ export default function AppointmentBooking() {
           {currentStep === 3 && (
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-medium text-gray-800">Select a Doctor</h2>
-                <button className="text-[#1e3a8a] text-sm font-medium hover:underline">All Ratings</button>
+                <h2 className="text-xl font-medium text-gray-800">
+                  Select a Doctor
+                </h2>
+                <button className="text-[#1e3a8a] text-sm font-medium hover:underline">
+                  All Ratings
+                </button>
               </div>
-              <p className="text-gray-600 mb-4">Choose from our {getSelectedDoctorTypeTitle()} specialists</p>
+              <p className="text-gray-600 mb-4">
+                Choose from our {getSelectedDoctorTypeTitle()} specialists
+              </p>
 
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
@@ -883,7 +1042,8 @@ export default function AppointmentBooking() {
                   {selectedReasons.length > 0 && (
                     <div className="flex items-center gap-2 bg-[#f0f9ff] text-[#0369a1] px-3 py-1.5 rounded-full text-sm">
                       <span>
-                        {selectedReasons.length} condition{selectedReasons.length > 1 ? "s" : ""}
+                        {selectedReasons.length} condition
+                        {selectedReasons.length > 1 ? "s" : ""}
                       </span>
                     </div>
                   )}
@@ -892,13 +1052,21 @@ export default function AppointmentBooking() {
                   <span className="text-sm text-gray-600">Sort by:</span>
                   <div className="flex rounded-lg border border-gray-200 overflow-hidden">
                     <button
-                      className={`px-3 py-1.5 text-sm ${sortBy === "rating" ? "bg-[#1e3a8a] text-white" : "bg-white text-gray-700"}`}
+                      className={`px-3 py-1.5 text-sm ${
+                        sortBy === "rating"
+                          ? "bg-[#1e3a8a] text-white"
+                          : "bg-white text-gray-700"
+                      }`}
                       onClick={() => setSortBy("rating")}
                     >
                       Rating
                     </button>
                     <button
-                      className={`px-3 py-1.5 text-sm ${sortBy === "availability" ? "bg-[#1e3a8a] text-white" : "bg-white text-gray-700"}`}
+                      className={`px-3 py-1.5 text-sm ${
+                        sortBy === "availability"
+                          ? "bg-[#1e3a8a] text-white"
+                          : "bg-white text-gray-700"
+                      }`}
                       onClick={() => setSortBy("availability")}
                     >
                       Availability
@@ -915,7 +1083,9 @@ export default function AppointmentBooking() {
                   <div
                     key={doctor.id}
                     className={`border rounded-lg overflow-hidden transition-all ${
-                      selectedDoctor === doctor.id ? "border-[#1e3a8a] ring-2 ring-[#1e3a8a]" : "border-gray-200"
+                      selectedDoctor === doctor.id
+                        ? "border-[#1e3a8a] ring-2 ring-[#1e3a8a]"
+                        : "border-gray-200"
                     }`}
                   >
                     <div className="p-4">
@@ -930,8 +1100,12 @@ export default function AppointmentBooking() {
                         <div className="flex-1">
                           <div className="flex justify-between">
                             <div>
-                              <h3 className="font-medium text-gray-800">{doctor.name}</h3>
-                              <p className="text-gray-600 text-sm">{doctor.specialty}</p>
+                              <h3 className="font-medium text-gray-800">
+                                {doctor.name}
+                              </h3>
+                              <p className="text-gray-600 text-sm">
+                                {doctor.speciality}
+                              </p>
                             </div>
                             <button
                               className="text-[#1e3a8a] text-sm font-medium hover:underline"
@@ -943,24 +1117,36 @@ export default function AppointmentBooking() {
                           <div className="flex items-center gap-4 mt-2">
                             <div className="flex items-center">
                               <Star className="h-4 w-4 text-[#f59e0b] fill-[#f59e0b]" />
-                              <span className="ml-1 text-sm font-medium">{doctor.rating}/5</span>
-                              <span className="ml-1 text-xs text-gray-500">({doctor.reviews})</span>
+                              <span className="ml-1 text-sm font-medium">
+                                {doctor.rating}/5
+                              </span>
+                              <span className="ml-1 text-xs text-gray-500">
+                                ({doctor.reviews})
+                              </span>
                             </div>
                             <div className="flex items-center">
                               <Clock className="h-4 w-4 text-gray-500" />
-                              <span className="ml-1 text-sm text-gray-600">{doctor.experience} years</span>
+                              <span className="ml-1 text-sm text-gray-600">
+                                {doctor.experience} years
+                              </span>
                             </div>
                             <div className="flex items-center">
                               <MapPin className="h-4 w-4 text-gray-500" />
-                              <span className="ml-1 text-sm text-gray-600">{doctor.distance}</span>
+                              <span className="ml-1 text-sm text-gray-600">
+                                {doctor.distance}
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         <div>
-                          <div className="text-sm font-medium text-gray-700">Next Available</div>
-                          <div className="text-sm text-gray-800">{doctor.availability[0].day}</div>
+                          <div className="text-sm font-medium text-gray-700">
+                            Next Available
+                          </div>
+                          <div className="text-sm text-gray-800">
+                            {doctor.availability[0].day}
+                          </div>
                         </div>
                         <button
                           onClick={() => toggleTimeSlots(doctor.id)}
@@ -973,8 +1159,8 @@ export default function AppointmentBooking() {
                           {selectedDoctor === doctor.id && selectedTimeSlot
                             ? "Time Selected"
                             : showTimeSlots === doctor.id
-                              ? "Hide Times"
-                              : "Select Time"}
+                            ? "Hide Times"
+                            : "Select Time"}
                         </button>
                       </div>
                     </div>
@@ -983,7 +1169,9 @@ export default function AppointmentBooking() {
                       <div className="bg-gray-50 p-4 border-t border-gray-200">
                         {doctor.availability.map((avail) => (
                           <div key={avail.day} className="mb-3 last:mb-0">
-                            <h4 className="text-sm font-medium text-gray-700 mb-2">{avail.day}</h4>
+                            <h4 className="text-sm font-medium text-gray-700 mb-2">
+                              {avail.day}
+                            </h4>
                             <div className="flex flex-wrap gap-2">
                               {avail.slots.map((slot) => (
                                 <button
@@ -1013,19 +1201,27 @@ export default function AppointmentBooking() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
               <Phone className="h-6 w-6 text-[#1e3a8a] mb-2" />
-              <span className="text-sm font-medium text-gray-700">24/7 Support</span>
+              <span className="text-sm font-medium text-gray-700">
+                24/7 Support
+              </span>
             </div>
             <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
               <Calendar className="h-6 w-6 text-[#1e3a8a] mb-2" />
-              <span className="text-sm font-medium text-gray-700">Easy Scheduling</span>
+              <span className="text-sm font-medium text-gray-700">
+                Easy Scheduling
+              </span>
             </div>
             <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
               <Clock className="h-6 w-6 text-[#1e3a8a] mb-2" />
-              <span className="text-sm font-medium text-gray-700">Quick Response</span>
+              <span className="text-sm font-medium text-gray-700">
+                Quick Response
+              </span>
             </div>
             <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
               <Shield className="h-6 w-6 text-[#1e3a8a] mb-2" />
-              <span className="text-sm font-medium text-gray-700">Secure Data</span>
+              <span className="text-sm font-medium text-gray-700">
+                Secure Data
+              </span>
             </div>
           </div>
 
@@ -1096,5 +1292,5 @@ export default function AppointmentBooking() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -43,7 +43,8 @@ export default function LoginPage() {
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userId",response.data.user.id);
-      localStorage.setItem("userType", userType);
+      localStorage.setItem("userType", response.data.user.userType);
+  
 
       if(!response.data.user.isVerified)
       {
@@ -52,7 +53,7 @@ export default function LoginPage() {
 
       
 
-      if (userType === "patient") {
+      if ( response.data.user.userType === "patient") {
         router.push("/patient/dashboard");
       } else {
         router.push("/doctor");

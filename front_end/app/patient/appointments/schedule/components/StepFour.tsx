@@ -1,68 +1,91 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Calendar, Clock, Video, CreditCard, CheckCircle } from "lucide-react"
-import { Doctor, Reason } from "../types"
+import { useState } from "react";
+import { Calendar, Clock, Video, CreditCard, CheckCircle } from "lucide-react";
+import { Doctor, Reason } from "../types";
 
 interface StepFourProps {
-  selectedDoctor: Doctor | null
-  selectedTimeSlot: string | null
-  selectedReasons: Reason[]
+  selectedDoctor: Doctor | null;
+  selectedTimeSlot: string | null;
+  selectedReasons: Reason[];
 }
 
-export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedReasons }: StepFourProps) {
-  const [paymentMethod, setPaymentMethod] = useState<"creditCard" | "insurance" | null>(null)
+export default function StepFour({
+  selectedDoctor,
+  selectedTimeSlot,
+  selectedReasons,
+}: StepFourProps) {
+  const [paymentMethod, setPaymentMethod] = useState<
+    "creditCard" | "insurance" | null
+  >(null);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     cardName: "",
     expiry: "",
-    cvv: ""
-  })
+    cvv: "",
+  });
   const [insuranceDetails, setInsuranceDetails] = useState({
     provider: "",
     policyNumber: "",
-    memberID: ""
-  })
+    memberID: "",
+  });
 
   if (!selectedDoctor || !selectedTimeSlot) {
-    return <div>Please select a doctor and time slot first.</div>
+    return <div>Please select a doctor and time slot first.</div>;
   }
 
   const handleCardDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setCardDetails({
       ...cardDetails,
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
 
-  const handleInsuranceDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+  const handleInsuranceDetailsChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
     setInsuranceDetails({
       ...insuranceDetails,
-      [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
 
   const isPaymentComplete = () => {
     if (paymentMethod === "creditCard") {
-      return cardDetails.cardNumber && cardDetails.cardName && cardDetails.expiry && cardDetails.cvv
+      return (
+        cardDetails.cardNumber &&
+        cardDetails.cardName &&
+        cardDetails.expiry &&
+        cardDetails.cvv
+      );
     } else if (paymentMethod === "insurance") {
-      return insuranceDetails.provider && insuranceDetails.policyNumber && insuranceDetails.memberID
+      return (
+        insuranceDetails.provider &&
+        insuranceDetails.policyNumber &&
+        insuranceDetails.memberID
+      );
     }
-    return false
-  }
+    return false;
+  };
 
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-medium text-gray-800 mb-2">Confirm Your Appointment</h2>
-      <p className="text-gray-600 mb-6">Review your appointment details and complete payment</p>
+      <h2 className="text-xl font-medium text-gray-800 mb-2">
+        Confirm Your Appointment
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Review your appointment details and complete payment
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* Appointment Summary */}
         <div className="border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-[#1e3a8a] mb-4">Appointment Summary</h3>
-          
+          <h3 className="text-lg font-medium text-[#1e3a8a] mb-4">
+            Appointment Summary
+          </h3>
+
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
@@ -73,8 +96,12 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
                 />
               </div>
               <div>
-                <h4 className="font-medium text-gray-800">{selectedDoctor.name}</h4>
-                <p className="text-gray-600 text-sm">{selectedDoctor.specialty}</p>
+                <h4 className="font-medium text-gray-800">
+                  {selectedDoctor.name}
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {selectedDoctor.speciality}
+                </p>
               </div>
             </div>
 
@@ -91,7 +118,9 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
             </div>
 
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">Reason for visit:</h5>
+              <h5 className="text-sm font-medium text-gray-700 mb-2">
+                Reason for visit:
+              </h5>
               <div className="flex flex-wrap gap-2">
                 {selectedReasons.map((reason) => (
                   <div
@@ -123,43 +152,59 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
 
         {/* Payment Section */}
         <div className="border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-[#1e3a8a] mb-4">Payment Method</h3>
-          
+          <h3 className="text-lg font-medium text-[#1e3a8a] mb-4">
+            Payment Method
+          </h3>
+
           <div className="space-y-6">
             {/* Payment Method Selection */}
             <div className="space-y-3">
               <button
                 onClick={() => setPaymentMethod("creditCard")}
                 className={`w-full flex items-center justify-between p-4 border rounded-lg ${
-                  paymentMethod === "creditCard" 
-                    ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]" 
+                  paymentMethod === "creditCard"
+                    ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]"
                     : "border-gray-200 hover:border-[#1e3a8a]"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <CreditCard className="h-5 w-5 text-[#1e3a8a]" />
-                  <span className="font-medium text-gray-800">Credit/Debit Card</span>
+                  <span className="font-medium text-gray-800">
+                    Credit/Debit Card
+                  </span>
                 </div>
                 {paymentMethod === "creditCard" && (
                   <CheckCircle className="h-5 w-5 text-[#1e3a8a]" />
                 )}
               </button>
-              
+
               <button
                 onClick={() => setPaymentMethod("insurance")}
                 className={`w-full flex items-center justify-between p-4 border rounded-lg ${
-                  paymentMethod === "insurance" 
-                    ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]" 
+                  paymentMethod === "insurance"
+                    ? "border-[#1e3a8a] bg-[#eef2ff] ring-2 ring-[#1e3a8a]"
                     : "border-gray-200 hover:border-[#1e3a8a]"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="h-5 w-5 flex items-center justify-center text-[#1e3a8a]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M2 9h20M2 15h20M6 19V5M18 19V5"></path>
                     </svg>
                   </div>
-                  <span className="font-medium text-gray-800">Health Insurance</span>
+                  <span className="font-medium text-gray-800">
+                    Health Insurance
+                  </span>
                 </div>
                 {paymentMethod === "insurance" && (
                   <CheckCircle className="h-5 w-5 text-[#1e3a8a]" />
@@ -171,7 +216,10 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
             {paymentMethod === "creditCard" && (
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="cardNumber"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Card Number
                   </label>
                   <input
@@ -184,9 +232,12 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
                     className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:border-transparent"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="cardName" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="cardName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Name on Card
                   </label>
                   <input
@@ -199,10 +250,13 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
                     className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:border-transparent"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="expiry" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="expiry"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Expiry Date
                     </label>
                     <input
@@ -215,9 +269,12 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
                       className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:border-transparent"
                     />
                   </div>
-                  
+
                   <div>
-                    <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="cvv"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       CVV
                     </label>
                     <input
@@ -238,7 +295,10 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
             {paymentMethod === "insurance" && (
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="provider" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="provider"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Insurance Provider
                   </label>
                   <input
@@ -251,9 +311,12 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
                     className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:border-transparent"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="policyNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="policyNumber"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Policy Number
                   </label>
                   <input
@@ -266,9 +329,12 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
                     className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1e3a8a] focus:border-transparent"
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="memberID" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="memberID"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Member ID
                   </label>
                   <input
@@ -286,17 +352,25 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
 
             {/* Payment Status */}
             {paymentMethod && (
-              <div className={`p-4 rounded-lg ${isPaymentComplete() ? 'bg-[#e6f7f2]' : 'bg-[#fff7ed]'}`}>
+              <div
+                className={`p-4 rounded-lg ${
+                  isPaymentComplete() ? "bg-[#e6f7f2]" : "bg-[#fff7ed]"
+                }`}
+              >
                 <div className="flex items-center gap-2">
                   {isPaymentComplete() ? (
                     <>
                       <CheckCircle className="h-5 w-5 text-[#0d9488]" />
-                      <span className="text-[#0d9488] font-medium">Ready to confirm</span>
+                      <span className="text-[#0d9488] font-medium">
+                        Ready to confirm
+                      </span>
                     </>
                   ) : (
                     <>
                       <Clock className="h-5 w-5 text-[#f59e0b]" />
-                      <span className="text-[#f59e0b] font-medium">Please complete payment details</span>
+                      <span className="text-[#f59e0b] font-medium">
+                        Please complete payment details
+                      </span>
                     </>
                   )}
                 </div>
@@ -308,9 +382,18 @@ export default function StepFour({ selectedDoctor, selectedTimeSlot, selectedRea
 
       <div className="bg-[#f8fafc] p-4 rounded-lg border border-gray-100">
         <p className="text-sm text-gray-600">
-          By confirming this appointment, you agree to our <a href="#" className="text-[#1e3a8a] hover:underline">Terms of Service</a> and <a href="#" className="text-[#1e3a8a] hover:underline">Privacy Policy</a>. You will receive a confirmation email with details about your video consultation.
+          By confirming this appointment, you agree to our{" "}
+          <a href="#" className="text-[#1e3a8a] hover:underline">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="#" className="text-[#1e3a8a] hover:underline">
+            Privacy Policy
+          </a>
+          . You will receive a confirmation email with details about your video
+          consultation.
         </p>
       </div>
     </div>
-  )
+  );
 }

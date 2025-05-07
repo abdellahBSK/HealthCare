@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const doctorSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   isVerifiedDoctor: { type: Boolean, default: false },
-  speciality: { type: String, required: true },
-  professionalLicenseNumber: { type: String, required: true, unique: true },
+  speciality: { type: String, required: false },
+  professionalLicenseNumber: { type: String, required: false, unique: true },
   biography: String,
   education: [{
     institution: String,

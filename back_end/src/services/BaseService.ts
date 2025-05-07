@@ -27,6 +27,26 @@ export class BaseService<T extends mongoose.Document> {
     }
   }
 
+  async find(filter: any, populate?: string | string[]): Promise<T[]> {
+    try {
+      let query = this.model.find(filter);
+      
+      if (populate) {
+        if (Array.isArray(populate)) {
+          populate.forEach(field => {
+            query = query.populate(field);
+          });
+        } else {
+          query = query.populate(populate);
+        }
+      }
+      
+      return await query.exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async findById(id: string, populate?: string | string[]): Promise<T | null> {
     try {
       let query = this.model.findById(id);

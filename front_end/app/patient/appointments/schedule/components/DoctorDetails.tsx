@@ -1,22 +1,36 @@
-"use client"
+"use client";
 
-import { ArrowLeft, Star, MapPin, Clock, GraduationCap, Languages, Heart } from "lucide-react"
-import { doctors } from "../data"
+import {
+  ArrowLeft,
+  Star,
+  MapPin,
+  Clock,
+  GraduationCap,
+  Languages,
+  Heart,
+} from "lucide-react";
+import { doctors } from "../data";
 
 interface DoctorDetailsProps {
-  doctorId: string
-  onBack: () => void
-  onBookAppointment: () => void
+  doctorId: string;
+  onBack: () => void;
+  onBookAppointment: () => void;
 }
 
-export default function DoctorDetails({ doctorId, onBack, onBookAppointment }: DoctorDetailsProps) {
+export default function DoctorDetails({
+  doctorId,
+  onBack,
+  onBookAppointment,
+}: DoctorDetailsProps) {
   // Find the doctor by ID
-  const doctor = doctors.find((doc) => doc.id === doctorId)
+  const doctor = doctors.find((doc) => doc.id === doctorId);
 
   if (!doctor) {
     return (
       <div className="p-8 text-center">
-        <div className="text-lg font-medium text-gray-800">Doctor not found</div>
+        <div className="text-lg font-medium text-gray-800">
+          Doctor not found
+        </div>
         <button
           onClick={onBack}
           className="mt-4 px-4 py-2 bg-[#1e3a8a] text-white rounded-lg hover:bg-[#152a60] transition-colors"
@@ -24,7 +38,7 @@ export default function DoctorDetails({ doctorId, onBack, onBookAppointment }: D
           Go Back
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -50,8 +64,10 @@ export default function DoctorDetails({ doctorId, onBack, onBookAppointment }: D
             <div className="flex-1">
               <div className="flex justify-between items-start">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800">{doctor.name}</h1>
-                  <p className="text-gray-600">{doctor.specialty}</p>
+                  <h1 className="text-2xl font-bold text-gray-800">
+                    {doctor.name}
+                  </h1>
+                  <p className="text-gray-600">{doctor.speciality}</p>
                 </div>
                 <button className="text-[#1e3a8a]">
                   <Heart className="h-5 w-5" />
@@ -61,16 +77,24 @@ export default function DoctorDetails({ doctorId, onBack, onBookAppointment }: D
               <div className="flex items-center gap-4 mt-3">
                 <div className="flex items-center">
                   <Star className="h-4 w-4 text-[#f59e0b] fill-[#f59e0b]" />
-                  <span className="ml-1 text-sm font-medium">{doctor.rating}/5</span>
-                  <span className="ml-1 text-xs text-gray-500">({doctor.reviews})</span>
+                  <span className="ml-1 text-sm font-medium">
+                    {doctor.rating}/5
+                  </span>
+                  <span className="ml-1 text-xs text-gray-500">
+                    ({doctor.reviews})
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="h-4 w-4 text-gray-500" />
-                  <span className="ml-1 text-sm text-gray-600">{doctor.experience} years</span>
+                  <span className="ml-1 text-sm text-gray-600">
+                    {doctor.experience} years
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <MapPin className="h-4 w-4 text-gray-500" />
-                  <span className="ml-1 text-sm text-gray-600">{doctor.distance}</span>
+                  <span className="ml-1 text-sm text-gray-600">
+                    {doctor.distance}
+                  </span>
                 </div>
               </div>
             </div>
@@ -110,19 +134,26 @@ export default function DoctorDetails({ doctorId, onBack, onBookAppointment }: D
               </div>
               <div>
                 <div className="text-sm text-gray-600">Next Available</div>
-                <div className="font-medium">{doctor.availability[0].day} at {doctor.availability[0].slots[0]}</div>
+                <div className="font-medium">
+                  {doctor.availability[0].day} at{" "}
+                  {doctor.availability[0].slots[0]}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-          <h2 className="text-xl font-medium text-gray-800 mb-4">About Dr. {doctor.name.split(" ")[1]}</h2>
+          <h2 className="text-xl font-medium text-gray-800 mb-4">
+            About Dr. {doctor.name.split(" ")[1]}
+          </h2>
           <p className="text-gray-700 leading-relaxed">{doctor.about}</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-          <h2 className="text-xl font-medium text-gray-800 mb-4">Availability</h2>
+          <h2 className="text-xl font-medium text-gray-800 mb-4">
+            Availability
+          </h2>
           <div className="space-y-4">
             {doctor.availability.map((avail) => (
               <div key={avail.day}>
@@ -152,5 +183,5 @@ export default function DoctorDetails({ doctorId, onBack, onBookAppointment }: D
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import api from "@/api/api";
 import { useRouter } from "next/navigation";
-import { UserProfile } from "@/types/user";
+import  UserProfile  from "@/types/user";
 import { Input } from "@/components/ui/input";
 // Remove toast import
 // import { toast } from "@/components/ui/use-toast";

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import authService from '../services/AuthService.js';
+import { AuthRequest } from '../middlewares/authMiddleware.js';
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -33,7 +34,9 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
   try {
+    console.log(req)
     const { email, password } = req.body;
+   
 
     const result = await authService.login(email, password);
 
@@ -152,3 +155,18 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     return res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to change password' });
   }
 };
+
+export const getMe = async (req: AuthRequest, res: Response): Promise<Response> => {
+  try {
+   if(!req.user){
+    return res.status(401).json({ message: 'Unauthorized' }); 
+   } 
+
+    const user = await authService.getUserProfile(req.user.userId);
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: error instanceof Error? error.message : 'Failed to get user profile' }); 
+  }
+}
