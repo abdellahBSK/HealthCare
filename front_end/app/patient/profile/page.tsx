@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { format } from 'date-fns';
-import { Skeleton } from '@/components/ui/skeleton';
-import api from '@/api/api';
-import { useRouter } from 'next/navigation';
-import { UserProfile } from '@/types/user';
+import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
+import api from "@/api/api";
+import { useRouter } from "next/navigation";
+import { UserProfile } from "@/types/user";
 import { Input } from "@/components/ui/input";
 // Remove toast import
 // import { toast } from "@/components/ui/use-toast";
@@ -18,41 +18,51 @@ export default function ProfilePage() {
   // Add notification state
   const [notification, setNotification] = useState<{
     show: boolean;
-    type: 'success' | 'error';
+    type: "success" | "error";
     message: string;
-  }>({ show: false, type: 'success', message: '' });
-  
+  }>({ show: false, type: "success", message: "" });
+
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
+  // Add file upload related hooks here
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    address: '',
-    bloodType: '',
-    height: '',
-    weight: '',
-    primaryCarePhysician: '',
-    emergencyContactName: '',
-    emergencyContactRelationship: '',
-    emergencyContactPhone: '',
-    insuranceProviderName: '',
-    insurancePolicyNumber: '',
-    preferredPharmacyName: '',
-    preferredPharmacyAddress: ''
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    address: "",
+    bloodType: "",
+    height: "",
+    weight: "",
+    primaryCarePhysician: "",
+    emergencyContact: {
+      name: "",
+      relationship: "",
+      phoneNumber: "",
+    },
+    insuranceProvider: {
+      name: "",
+      policyNumber: "",
+    },
+    preferredPharmacy: {
+      name: "",
+      address: "",
+    },
   });
   const router = useRouter();
 
   // Get user ID from localStorage
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUserId = localStorage.getItem('userId');
-    
+    const token = localStorage.getItem("token");
+    const storedUserId = localStorage.getItem("userId");
+
     if (!token || !storedUserId) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
 
@@ -63,33 +73,41 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!userId) return;
-      
+
       try {
         const response = await api.get(`/users/${userId}/profile`);
         setUserProfile(response.data);
-        
+
         // Initialize form data with user profile data
         const { user, profile } = response.data;
         setFormData({
-          firstName: user.firstName || '',
-          lastName: user.lastName || '',
-          phoneNumber: user.phoneNumber || '',
-          dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
-          address: user.address || '',
-          bloodType: profile?.bloodType || '',
-          height: profile?.height || '',
-          weight: profile?.weight || '',
-          primaryCarePhysician: profile?.primaryCarePhysician || '',
-          emergencyContactName: profile?.emergencyContact?.name || '',
-          emergencyContactRelationship: profile?.emergencyContact?.relationship || '',
-          emergencyContactPhone: profile?.emergencyContact?.phoneNumber || '',
-          insuranceProviderName: profile?.insuranceProvider?.name || '',
-          insurancePolicyNumber: profile?.insuranceProvider?.policyNumber || '',
-          preferredPharmacyName: profile?.preferredPharmacy?.name || '',
-          preferredPharmacyAddress: profile?.preferredPharmacy?.address || ''
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          phoneNumber: user.phoneNumber || "",
+          dateOfBirth: user.dateOfBirth
+            ? new Date(user.dateOfBirth).toISOString().split("T")[0]
+            : "",
+          address: user.address || "",
+          bloodType: profile?.bloodType || "",
+          height: profile?.height || "",
+          weight: profile?.weight || "",
+          primaryCarePhysician: profile?.primaryCarePhysician || "",
+          emergencyContact: {
+            name: formData.emergencyContact.name || "",
+            relationship: formData.emergencyContact.relationship || "",
+            phoneNumber: formData.emergencyContact.phoneNumber || "",
+          },
+          insuranceProvider: {
+            name: formData.insuranceProvider.name || "",
+            policyNumber: formData.insuranceProvider.policyNumber || "",
+          },
+          preferredPharmacy: {
+            name: formData.preferredPharmacy.name || "",
+            address: formData.preferredPharmacy.address || "",
+          },
         });
       } catch (error) {
-        console.error('Failed to fetch user profile:', error);
+        console.error("Failed to fetch user profile:", error);
       } finally {
         setLoading(false);
       }
@@ -102,16 +120,30 @@ export default function ProfilePage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    // Handle nested objects (emergency contact, insurance, pharmacy)
+    if (name.includes(".")) {
+      const [objectName, field] = name.split(".");
+      setFormData((prev) => ({
+        ...prev,
+        [objectName]: {
+          ...(prev[objectName as keyof typeof prev] as Record<string, string>),
+          [field]: value,
+        },
+      }));
+    } else {
+      // Handle regular fields
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   // Update handleSaveChanges to use our custom notification
   const handleSaveChanges = async () => {
     if (!userId) return;
-    
+
     try {
       // Prepare user data
       const userData = {
@@ -119,7 +151,7 @@ export default function ProfilePage() {
         lastName: formData.lastName,
         phoneNumber: formData.phoneNumber,
         dateOfBirth: formData.dateOfBirth,
-        address: formData.address
+        address: formData.address,
       };
 
       // Prepare profile data
@@ -129,57 +161,56 @@ export default function ProfilePage() {
         weight: formData.weight,
         primaryCarePhysician: formData.primaryCarePhysician,
         emergencyContact: {
-          name: formData.emergencyContactName,
-          relationship: formData.emergencyContactRelationship,
-          phoneNumber: formData.emergencyContactPhone
+          name: formData.emergencyContact.name,
+          relationship: formData.emergencyContact.relationship,
+          phoneNumber: formData.emergencyContact.phoneNumber,
         },
         insuranceProvider: {
-          name: formData.insuranceProviderName,
-          policyNumber: formData.insurancePolicyNumber
+          name: formData.insuranceProvider.name,
+          policyNumber: formData.insuranceProvider.policyNumber,
         },
         preferredPharmacy: {
-          name: formData.preferredPharmacyName,
-          address: formData.preferredPharmacyAddress
-        }
+          name: formData.preferredPharmacy.name,
+          address: formData.preferredPharmacy.address,
+        },
       };
 
       // Update user info
       await api.put(`/users/${userId}`, userData);
-      
+
       // Update patient profile
-      await api.put(`/patients/${userId}`, profileData);
-      
+      await api.put(`/patients/user/${userId}`, profileData);
+
       // Fetch updated profile
       const response = await api.get(`/users/${userId}/profile`);
       setUserProfile(response.data);
-      
+
       setEditMode(false);
-      
+
       // Show success notification
       setNotification({
         show: true,
-        type: 'success',
-        message: 'Your profile has been updated successfully.'
+        type: "success",
+        message: "Your profile has been updated successfully.",
       });
-      
+
       // Hide notification after 3 seconds
       setTimeout(() => {
-        setNotification({ show: false, type: 'success', message: '' });
+        setNotification({ show: false, type: "success", message: "" });
       }, 3000);
-      
     } catch (error) {
-      console.error('Failed to update profile:', error);
-      
+      console.error("Failed to update profile:", error);
+
       // Show error notification
       setNotification({
         show: true,
-        type: 'error',
-        message: 'There was an error updating your profile. Please try again.'
+        type: "error",
+        message: "There was an error updating your profile. Please try again.",
       });
-      
+
       // Hide notification after 3 seconds
       setTimeout(() => {
-        setNotification({ show: false, type: 'error', message: '' });
+        setNotification({ show: false, type: "error", message: "" });
       }, 3000);
     }
   };
@@ -191,7 +222,7 @@ export default function ProfilePage() {
           <Skeleton className="h-8 w-64" />
           <Skeleton className="h-10 w-32" />
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Skeleton className="h-[500px] col-span-1 rounded-lg" />
           <Skeleton className="h-[500px] col-span-1 md:col-span-2 rounded-lg" />
@@ -201,42 +232,108 @@ export default function ProfilePage() {
   }
 
   if (!userProfile) {
-    return <div className="p-6">Failed to load profile data. Please try again later.</div>;
+    return (
+      <div className="p-6">
+        Failed to load profile data. Please try again later.
+      </div>
+    );
   }
 
   const { user: userData, profile } = userProfile!;
-  
+
   // Format date of birth if available
-  const formattedDOB = userData.dateOfBirth 
-    ? format(new Date(userData.dateOfBirth), 'MMMM d, yyyy')
-    : 'Not provided';
+  const formattedDOB = userData.dateOfBirth
+    ? format(new Date(userData.dateOfBirth), "MMMM d, yyyy")
+    : "Not provided";
 
   // Create initials for avatar fallback
-  const initials = `${userData.firstName?.charAt(0) || ''}${userData.lastName?.charAt(0) || ''}`;
+  const initials = `${userData.firstName?.charAt(0) || ""}${
+    userData.lastName?.charAt(0) || ""
+  }`;
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userId) return;
+
+    try {
+      setUploading(true);
+
+      // Create form data
+      const formData = new FormData();
+      formData.append("profileImage", file);
+  
+      // Upload the image
+      await api.post(`/users/${userId}/upload-profile-image`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Fetch updated profile to get the new image URL
+      const response = await api.get(`/users/${userId}/profile`);
+      setUserProfile(response.data);
+
+      // Show success notification
+      setNotification({
+        show: true,
+        type: "success",
+        message: "Profile photo updated successfully.",
+      });
+
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        setNotification({ show: false, type: "success", message: "" });
+      }, 3000);
+    } catch (error) {
+      console.error("Failed to upload profile image:", error);
+
+      // Show error notification
+      setNotification({
+        show: true,
+        type: "error",
+        message: "Failed to upload profile image. Please try again.",
+      });
+
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        setNotification({ show: false, type: "error", message: "" });
+      }, 3000);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Add function to trigger file input click
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="p-6">
       {/* Add notification display */}
       {notification.show && (
-        <div className={`fixed top-4 right-4 p-4 rounded-md shadow-md z-50 ${
-          notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
+        <div
+          className={`fixed top-4 right-4 p-4 rounded-md shadow-md z-50 ${
+            notification.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
           {notification.message}
         </div>
       )}
-      
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-blue-900">My Profile</h1>
         {editMode ? (
           <div className="space-x-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-red-500 text-red-500 hover:bg-red-50"
               onClick={() => setEditMode(false)}
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               className="bg-blue-900 hover:bg-blue-800"
               onClick={handleSaveChanges}
             >
@@ -244,8 +341,8 @@ export default function ProfilePage() {
             </Button>
           </div>
         ) : (
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="border-blue-900 text-blue-900 hover:bg-blue-50"
             onClick={() => setEditMode(true)}
           >
@@ -258,19 +355,26 @@ export default function ProfilePage() {
         <Card className="col-span-1 p-6">
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-24 w-24 mb-4">
-              <AvatarImage src={userData.profileImage || "/placeholder.svg?height=96&width=96"} alt={`${userData.firstName} ${userData.lastName}`} />
-              <AvatarFallback className="text-xl bg-blue-100 text-blue-900">{initials}</AvatarFallback>
+              <AvatarImage
+                src={
+                  userData.profileImage || "/placeholder.svg?height=96&width=96"
+                }
+                alt={`${userData.firstName} ${userData.lastName}`}
+              />
+              <AvatarFallback className="text-xl bg-blue-100 text-blue-900">
+                {initials}
+              </AvatarFallback>
             </Avatar>
             {editMode ? (
               <div className="space-y-2 w-full">
-                <Input 
+                <Input
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
                   placeholder="First Name"
                   className="text-center"
                 />
-                <Input 
+                <Input
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
@@ -282,33 +386,56 @@ export default function ProfilePage() {
               <h2 className="text-xl font-bold text-blue-900">{`${userData.firstName} ${userData.lastName}`}</h2>
             )}
             <p className="text-gray-500 mb-4">Patient ID: {userData._id}</p>
-            <Button className="w-full bg-blue-900 hover:bg-blue-800 mb-2">Upload New Photo</Button>
+
+            {/* Add hidden file input and update button */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
+            />
+            <Button
+              className="w-full bg-blue-900 hover:bg-blue-800 mb-2"
+              onClick={handleUploadClick}
+              disabled={uploading}
+            >
+              {uploading ? "Uploading..." : "Upload New Photo"}
+            </Button>
           </div>
 
           <Separator className="my-6" />
 
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Email Address</h3>
+              <h3 className="text-sm font-medium text-gray-500">
+                Email Address
+              </h3>
               <p className="text-blue-900">{userData.email}</p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Phone Number</h3>
+              <h3 className="text-sm font-medium text-gray-500">
+                Phone Number
+              </h3>
               {editMode ? (
-                <Input 
+                <Input
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
                   placeholder="Phone Number"
                 />
               ) : (
-                <p className="text-blue-900">{userData.phoneNumber || 'Not provided'}</p>
+                <p className="text-blue-900">
+                  {userData.phoneNumber || "Not provided"}
+                </p>
               )}
             </div>
             <div>
-              <h3 className="text-sm font-medium text-gray-500">Date of Birth</h3>
+              <h3 className="text-sm font-medium text-gray-500">
+                Date of Birth
+              </h3>
               {editMode ? (
-                <Input 
+                <Input
                   name="dateOfBirth"
                   type="date"
                   value={formData.dateOfBirth}
@@ -321,14 +448,16 @@ export default function ProfilePage() {
             <div>
               <h3 className="text-sm font-medium text-gray-500">Address</h3>
               {editMode ? (
-                <Input 
+                <Input
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="Address"
                 />
               ) : (
-                <p className="text-blue-900">{userData.address || 'Not provided'}</p>
+                <p className="text-blue-900">
+                  {userData.address || "Not provided"}
+                </p>
               )}
             </div>
           </div>
@@ -336,13 +465,17 @@ export default function ProfilePage() {
 
         <Card className="col-span-1 md:col-span-2 p-6">
           <div>
-            <h2 className="text-xl font-bold text-blue-900 mb-4">Personal Information</h2>
+            <h2 className="text-xl font-bold text-blue-900 mb-4">
+              Personal Information
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Primary Care Physician</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Primary Care Physician
+                </h3>
                 {editMode ? (
-                  <Input 
+                  <Input
                     name="primaryCarePhysician"
                     value={formData.primaryCarePhysician}
                     onChange={handleInputChange}
@@ -350,12 +483,16 @@ export default function ProfilePage() {
                     className="mb-4"
                   />
                 ) : (
-                  <p className="text-blue-900 mb-4">{profile?.primaryCarePhysician || 'Not specified'}</p>
+                  <p className="text-blue-900 mb-4">
+                    {profile?.primaryCarePhysician || "Not specified"}
+                  </p>
                 )}
 
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Blood Type</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Blood Type
+                </h3>
                 {editMode ? (
-                  <Input 
+                  <Input
                     name="bloodType"
                     value={formData.bloodType}
                     onChange={handleInputChange}
@@ -363,157 +500,203 @@ export default function ProfilePage() {
                     className="mb-4"
                   />
                 ) : (
-                  <p className="text-blue-900 mb-4">{profile?.bloodType || 'Not specified'}</p>
+                  <p className="text-blue-900 mb-4">
+                    {profile?.bloodType || "Not specified"}
+                  </p>
                 )}
 
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Height</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Height
+                </h3>
                 {editMode ? (
-                  <Input 
+                  <Input
                     name="height"
                     value={formData.height}
                     onChange={handleInputChange}
-                    placeholder="Height"
+                    placeholder="Height (cm)"
                     className="mb-4"
                   />
                 ) : (
-                  <p className="text-blue-900 mb-4">{profile?.height || 'Not specified'}</p>
+                  <p className="text-blue-900 mb-4">
+                    {profile?.height ? `${profile.height} cm` : "Not specified"}
+                  </p>
                 )}
 
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Weight</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Weight
+                </h3>
                 {editMode ? (
-                  <Input 
+                  <Input
                     name="weight"
                     value={formData.weight}
                     onChange={handleInputChange}
-                    placeholder="Weight"
+                    placeholder="Weight (kg)"
                     className="mb-4"
                   />
                 ) : (
-                  <p className="text-blue-900 mb-4">{profile?.weight || 'Not specified'}</p>
+                  <p className="text-blue-900 mb-4">
+                    {profile?.weight ? `${profile.weight} kg` : "Not specified"}
+                  </p>
                 )}
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Emergency Contact</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Emergency Contact
+                </h3>
                 {editMode ? (
                   <div className="space-y-2 mb-4">
-                    <Input 
-                      name="emergencyContactName"
-                      value={formData.emergencyContactName}
+                    <Input
+                      name="emergencyContact.name"
+                      value={formData.emergencyContact.name}
                       onChange={handleInputChange}
                       placeholder="Contact Name"
                     />
-                    <Input 
-                      name="emergencyContactRelationship"
-                      value={formData.emergencyContactRelationship}
+                    <Input
+                      name="emergencyContact.relationship"
+                      value={formData.emergencyContact.relationship}
                       onChange={handleInputChange}
                       placeholder="Relationship"
                     />
-                    <Input 
-                      name="emergencyContactPhone"
-                      value={formData.emergencyContactPhone}
+                    <Input
+                      name="emergencyContact.phoneNumber"
+                      value={formData.emergencyContact.phoneNumber}
                       onChange={handleInputChange}
                       placeholder="Phone Number"
                     />
                   </div>
+                ) : profile?.emergencyContact &&
+                  profile.emergencyContact.name &&
+                  profile.emergencyContact.relationship ? (
+                  <>
+                    <p className="text-blue-900">{`${profile.emergencyContact.name} (${profile.emergencyContact.relationship})`}</p>
+                    <p className="text-blue-900 mb-4">
+                      {profile.emergencyContact.phoneNumber ||
+                        "No phone number"}
+                    </p>
+                  </>
                 ) : (
-                  profile?.emergencyContact ? (
-                    <>
-                      <p className="text-blue-900">{`${profile.emergencyContact.name} (${profile.emergencyContact.relationship})`}</p>
-                      <p className="text-blue-900 mb-4">{profile.emergencyContact.phoneNumber}</p>
-                    </>
-                  ) : (
-                    <p className="text-blue-900 mb-4">Not specified</p>
-                  )
+                  <p className="text-blue-900 mb-4">Not specified</p>
                 )}
 
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Insurance Provider</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Insurance Provider
+                </h3>
                 {editMode ? (
                   <div className="space-y-2 mb-4">
-                    <Input 
-                      name="insuranceProviderName"
-                      value={formData.insuranceProviderName}
+                    <Input
+                      name="insuranceProvider.name"
+                      value={formData.insuranceProvider.name}
                       onChange={handleInputChange}
                       placeholder="Provider Name"
                     />
-                    <Input 
-                      name="insurancePolicyNumber"
-                      value={formData.insurancePolicyNumber}
+                    <Input
+                      name="insuranceProvider.policyNumber"
+                      value={formData.insuranceProvider.policyNumber}
                       onChange={handleInputChange}
                       placeholder="Policy Number"
                     />
                   </div>
+                ) : profile?.insuranceProvider ? (
+                  <>
+                    <p className="text-blue-900">
+                      {profile.insuranceProvider.name}
+                    </p>
+                    <p className="text-blue-900 mb-4">
+                      Policy #: {profile.insuranceProvider.policyNumber}
+                    </p>
+                  </>
                 ) : (
-                  profile?.insuranceProvider ? (
-                    <>
-                      <p className="text-blue-900">{profile.insuranceProvider.name}</p>
-                      <p className="text-blue-900 mb-4">Policy #: {profile.insuranceProvider.policyNumber}</p>
-                    </>
-                  ) : (
-                    <p className="text-blue-900 mb-4">Not specified</p>
-                  )
+                  <p className="text-blue-900 mb-4">Not specified</p>
                 )}
 
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Preferred Pharmacy</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">
+                  Preferred Pharmacy
+                </h3>
                 {editMode ? (
                   <div className="space-y-2">
-                    <Input 
-                      name="preferredPharmacyName"
-                      value={formData.preferredPharmacyName}
+                    <Input
+                      name="preferredPharmacy.name"
+                      value={formData.preferredPharmacy.name}
                       onChange={handleInputChange}
                       placeholder="Pharmacy Name"
                     />
-                    <Input 
-                      name="preferredPharmacyAddress"
-                      value={formData.preferredPharmacyAddress}
+                    <Input
+                      name="preferredPharmacy.address"
+                      value={formData.preferredPharmacy.address}
                       onChange={handleInputChange}
                       placeholder="Pharmacy Address"
                     />
                   </div>
+                ) : profile?.preferredPharmacy ? (
+                  <>
+                    <p className="text-blue-900">
+                      {profile.preferredPharmacy.name}
+                    </p>
+                    <p className="text-blue-900">
+                      {profile.preferredPharmacy.address}
+                    </p>
+                  </>
                 ) : (
-                  profile?.preferredPharmacy ? (
-                    <>
-                      <p className="text-blue-900">{profile.preferredPharmacy.name}</p>
-                      <p className="text-blue-900">{profile.preferredPharmacy.address}</p>
-                    </>
-                  ) : (
-                    <p className="text-blue-900">Not specified</p>
-                  )
+                  <p className="text-blue-900">Not specified</p>
                 )}
               </div>
             </div>
 
             <Separator className="my-6" />
 
-            <h2 className="text-xl font-bold text-blue-900 mb-4">Account Settings</h2>
+            <h2 className="text-xl font-bold text-blue-900 mb-4">
+              Account Settings
+            </h2>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-blue-900">Two-Factor Authentication</h3>
-                  <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
+                  <h3 className="font-medium text-blue-900">
+                    Two-Factor Authentication
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Add an extra layer of security to your account
+                  </p>
                 </div>
-                <Button variant="outline" className="border-blue-900 text-blue-900 hover:bg-blue-50">
+                <Button
+                  variant="outline"
+                  className="border-blue-900 text-blue-900 hover:bg-blue-50"
+                >
                   Enable
                 </Button>
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-blue-900">Notification Preferences</h3>
-                  <p className="text-sm text-gray-500">Manage how you receive notifications</p>
+                  <h3 className="font-medium text-blue-900">
+                    Notification Preferences
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Manage how you receive notifications
+                  </p>
                 </div>
-                <Button variant="outline" className="border-blue-900 text-blue-900 hover:bg-blue-50">
+                <Button
+                  variant="outline"
+                  className="border-blue-900 text-blue-900 hover:bg-blue-50"
+                >
                   Manage
                 </Button>
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-blue-900">Privacy Settings</h3>
-                  <p className="text-sm text-gray-500">Control your data and privacy preferences</p>
+                  <h3 className="font-medium text-blue-900">
+                    Privacy Settings
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Control your data and privacy preferences
+                  </p>
                 </div>
-                <Button variant="outline" className="border-blue-900 text-blue-900 hover:bg-blue-50">
+                <Button
+                  variant="outline"
+                  className="border-blue-900 text-blue-900 hover:bg-blue-50"
+                >
                   Update
                 </Button>
               </div>
