@@ -2,7 +2,7 @@ import express, { Application }  from 'express'
 import cors from 'cors'
 import routes from './routes/index.js'
 import morgan from 'morgan';
-
+// import adminRoutes and app.use('/api/admin', adminRoutes); ...
 const app: Application = express();
 
 
